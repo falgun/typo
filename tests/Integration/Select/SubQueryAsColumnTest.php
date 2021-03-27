@@ -24,6 +24,7 @@ final class SubQueryAsColumnTest extends AbstractIntegrationTest
                 $builder->select($postMeta->title())
                 ->from($postMeta->table())
                 ->where($postMeta->user_id()->eq($userMeta->id()))
+                ->andWhere($postMeta->id()->eq(99))
                 ->as('post_title')
                 )
             )
@@ -33,7 +34,42 @@ final class SubQueryAsColumnTest extends AbstractIntegrationTest
             <<<SQL
             SELECT users.id, (SELECT posts.title
             FROM posts
-            WHERE posts.user_id = users.id) as post_title
+            WHERE posts.user_id = users.id AND posts.id = ?) as post_title
+            FROM users
+            SQL,
+            $query->getSQL()
+        );
+
+        $this->assertSame(
+            [99],
+            $query->getBindValues()
+        );
+    }
+
+    public function testSubqueryOnSelectSelfColumn()
+    {
+        $builder = $this->getBuilder();
+
+        $userMeta = UsersMeta::new();
+        $userMeta2 = UsersMeta::as('u2');
+
+        $query = $builder
+            ->select(
+                $userMeta->id(),
+                (
+                $builder->select($userMeta2->id())
+                ->from($userMeta2->table())
+                ->where($userMeta2->id()->eq($userMeta->id()))
+                ->as('mirrored_id')
+                )
+            )
+            ->from($userMeta->table());
+
+        $this->assertSame(
+            <<<SQL
+            SELECT users.id, (SELECT u2.id
+            FROM users as u2
+            WHERE u2.id = users.id) as mirrored_id
             FROM users
             SQL,
             $query->getSQL()
