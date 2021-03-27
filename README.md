@@ -57,12 +57,14 @@ $connection = new MySqlConnection($configuration);
 $connection->connect();
 
 //create the query builder
-$builder = new Builder($kuery);
+$builder = new Builder(new Kuery($connection));
 
 //load user meta, this is auto generated class
 $userMeta = UsersMeta::new();
 
-// Select Query
+/**************
+* Select Query
+**************/
 $users = $builder
     ->select(
         $userMeta->id(),
@@ -75,6 +77,7 @@ $users = $builder
     ->orderBy($userMeta->id())
     ->limit(0, 100)
     ->fetch();
+
 // This one will run below SQL
 SELECT users.id, users.name as full_name, users.username
 FROM users
@@ -82,7 +85,9 @@ WHERE users.id = ? OR users.id = ?
 ORDER BY users.id ASC
 LIMIT 0, 100
 
-// Insert Query
+/**************
+* Insert Query
+**************/
 $userID = $builder->insertInto(
     $userMeta->table(),
     $userMeta->name(),
@@ -90,24 +95,31 @@ $userID = $builder->insertInto(
     )
     ->values('New User', 'NewUser')
     ->execute();
+
 // It will run below SQL
 INSERT INTO users (users.name, users.username) VALUES (?, ?)
 
-// Update Query
+/**************
+* Update Query
+**************/
 $builder->update($userMeta->table())
     ->set($userMeta->name(), 'Updated Name')
     ->set($userMeta->username(), 'UpdatedName')
     ->where($userMeta->id()->eq(10))
     ->execute();
+
 // It will run below SQL
 UPDATE users
 SET users.name = ?, users.username = ?
 WHERE users.id = ?
 
-// Delete Query
+/**************
+* Delete Query
+**************/
 $qb->delete($userMeta->table())
     ->where($userMeta->id()->eq(5))
     ->execute();
+
 // It will run below SQL
 DELETE FROM users
 WHERE users.id = ?
