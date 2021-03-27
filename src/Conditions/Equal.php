@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Falgun\Typo\Conditions;
 
 use Falgun\Typo\Interfaces\SQLableInterface;
+use Falgun\Typo\Interfaces\SubQueryInterface;
 
 final class Equal implements ConditionInterface
 {
@@ -77,7 +78,11 @@ final class Equal implements ConditionInterface
 
     public function getBindValues(): array
     {
-        if (is_object($this->sideB) && $this->sideB instanceof SQLableInterface) {
+        if (is_object($this->sideB) && $this->sideB instanceof SubQueryInterface) {
+            // subquery
+            return $this->sideB->getBindValues();
+        } elseif (is_object($this->sideB) && $this->sideB instanceof SQLableInterface) {
+            // column
             return [];
         }
 

@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace Falgun\Typo\Query\Select;
 
+use Falgun\Typo\Interfaces\SubQueryInterface;
 use Falgun\Typo\Query\Select\SelectQueryStep2;
 use Falgun\Typo\Interfaces\TableLikeInterface;
 
-final class SubQueryTable implements TableLikeInterface
+final class SubQueryTable implements TableLikeInterface, SubQueryInterface
 {
 
     private SelectQueryStep2 $selectQuery;
@@ -32,7 +33,13 @@ final class SubQueryTable implements TableLikeInterface
 
     public function getSQL(): string
     {
-        return '(' . $this->selectQuery->getSQL() . ') as ' . $this->alias;
+        $sql = '(' . $this->selectQuery->getSQL() . ')';
+
+        if ($this->alias) {
+            $sql .= ' as ' . $this->alias;
+        }
+
+        return $sql;
     }
 
     public function getBindValues(): array
