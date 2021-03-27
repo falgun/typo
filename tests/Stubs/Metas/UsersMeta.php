@@ -13,14 +13,14 @@ final class UsersMeta
 
     private string $alias;
 
-    private function __construct(string $alias)
+    private function __construct(string $alias = '')
     {
         $this->alias = $alias;
     }
 
     public static function new()
     {
-        return new static(static::NAME);
+        return new static();
     }
 
     public static function as(string $alias)
@@ -30,21 +30,32 @@ final class UsersMeta
 
     public function table(): Table
     {
-        return Table::fromName(self::NAME);
+        $table = Table::fromName(self::NAME);
+
+        if ($this->alias !== '') {
+            $table->as($this->alias);
+        }
+
+        return $table;
+    }
+
+    private function getNameOrAlias(): string
+    {
+        return ($this->alias ? $this->alias : self::NAME);
     }
 
     public function id(): Column
     {
-        return Column::fromSchema($this->alias . '.id');
+        return Column::fromSchema($this->getNameOrAlias() . '.id');
     }
 
     public function name(): Column
     {
-        return Column::fromSchema($this->alias . '.name');
+        return Column::fromSchema($this->getNameOrAlias() . '.name');
     }
 
     public function username(): Column
     {
-        return Column::fromSchema($this->alias . '.username');
+        return Column::fromSchema($this->getNameOrAlias() . '.username');
     }
 }

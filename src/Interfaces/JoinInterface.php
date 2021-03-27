@@ -2,10 +2,13 @@
 
 namespace Falgun\Typo\Interfaces;
 
+use Falgun\Typo\Interfaces\SQLableInterface;
 use Falgun\Typo\Conditions\ConditionInterface;
 
-interface JoinInterface
+interface JoinInterface extends SQLableInterface
 {
+
+    public function asInner(): JoinInterface;
 
     public function asLeft(): JoinInterface;
 

@@ -13,7 +13,7 @@ final class Table implements TableLikeInterface
     private string $name;
     private string $alias;
 
-    private function __construct(string $name, string $alias)
+    private function __construct(string $name, string $alias = '')
     {
         $this->name = $name;
         $this->alias = $alias;
@@ -21,7 +21,7 @@ final class Table implements TableLikeInterface
 
     public static function fromName(string $name): static
     {
-        return new static($name, $name);
+        return new static($name);
     }
 
     public function as(string $alias): self
@@ -38,6 +38,6 @@ final class Table implements TableLikeInterface
 
     public function getSQL(): string
     {
-        return $this->alias;
+        return ($this->alias ? $this->name . ' as ' . $this->alias : $this->name);
     }
 }

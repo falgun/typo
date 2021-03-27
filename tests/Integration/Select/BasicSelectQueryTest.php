@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Falgun\Typo\Tests\Integration\Select;
 
-use PHPUnit\Framework\TestCase;
 use Falgun\Typo\Tests\Stubs\Metas\UsersMeta;
 use Falgun\Typo\Tests\Stubs\Metas\PostsMeta;
 use Falgun\Typo\Tests\Integration\AbstractIntegrationTest;
@@ -67,7 +66,7 @@ final class BasicSelectQueryTest extends AbstractIntegrationTest
             <<<SQL
             SELECT users.id, users.name as full_name, users.username, posts.title
             FROM users
-            INNER JOIN posts ON posts.user_id = users.id
+            JOIN posts ON posts.user_id = users.id
             ORDER BY posts.id ASC
             
             SQL,

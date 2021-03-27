@@ -13,14 +13,14 @@ final class PostsMeta
 
     private string $alias;
 
-    private function __construct(string $alias)
+    private function __construct(string $alias = '')
     {
         $this->alias = $alias;
     }
 
     public static function new()
     {
-        return new static(static::NAME);
+        return new static();
     }
 
     public static function as(string $alias)
@@ -30,26 +30,37 @@ final class PostsMeta
 
     public function table(): Table
     {
-        return Table::fromName(self::NAME);
+        $table = Table::fromName(self::NAME);
+
+        if ($this->alias !== '') {
+            $table->as($this->alias);
+        }
+
+        return $table;
+    }
+
+    private function getNameOrAlias(): string
+    {
+        return ($this->alias ? $this->alias : self::NAME);
     }
 
     public function id(): Column
     {
-        return Column::fromSchema($this->alias . '.id');
+        return Column::fromSchema($this->getNameOrAlias() . '.id');
     }
 
     public function category_id(): Column
     {
-        return Column::fromSchema($this->alias . '.category_id');
+        return Column::fromSchema($this->getNameOrAlias() . '.category_id');
     }
 
     public function user_id(): Column
     {
-        return Column::fromSchema($this->alias . '.user_id');
+        return Column::fromSchema($this->getNameOrAlias() . '.user_id');
     }
 
     public function title(): Column
     {
-        return Column::fromSchema($this->alias . '.title');
+        return Column::fromSchema($this->getNameOrAlias() . '.title');
     }
 }

@@ -62,6 +62,13 @@ final class SelectQueryStep2 implements SQLableInterface
         return $this;
     }
 
+    public function innerJoin(JoinInterface $join): SelectQueryStep2
+    {
+        $this->joins[] = $join->asInner();
+
+        return $this;
+    }
+
     public function leftJoin(JoinInterface $join): SelectQueryStep2
     {
         $this->joins[] = $join->asLeft();
