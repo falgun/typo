@@ -6,9 +6,10 @@ namespace Falgun\Typo\Query\Update;
 use Falgun\Kuery\Kuery;
 use Falgun\Typo\Query\Parts\Table;
 use Falgun\Typo\Query\Parts\Column;
+use Falgun\Typo\Interfaces\SQLableInterface;
 use Falgun\Typo\Conditions\ConditionInterface;
 
-final class UpdateQueryStep2
+final class UpdateQueryStep2 implements SQLableInterface
 {
 
     /** @psalm-suppress PropertyNotSetInConstructor */
@@ -16,6 +17,9 @@ final class UpdateQueryStep2
 
     /** @psalm-suppress PropertyNotSetInConstructor */
     private Table $table;
+
+    /** @psalm-suppress PropertyNotSetInConstructor */
+    private array $joins;
 
     /** @psalm-suppress PropertyNotSetInConstructor */
     private array $updatableColumns;
@@ -35,6 +39,7 @@ final class UpdateQueryStep2
     public static function fromCondition(
         Kuery $kuery,
         Table $table,
+        array $joins,
         array $columns,
         array $values,
         ConditionInterface $condition
@@ -43,6 +48,7 @@ final class UpdateQueryStep2
         $object = new static;
         $object->kuery = $kuery;
         $object->table = $table;
+        $object->joins = $joins;
         $object->updatableColumns = $columns;
         $object->updatableValues = $values;
         $object->conditions[] = $condition;
@@ -68,9 +74,17 @@ final class UpdateQueryStep2
     {
         $sql = 'UPDATE ' . $this->table->getSQL() . PHP_EOL;
 
+        foreach ($this->joins as $join) {
+            $sql .= $join->getSQL() . PHP_EOL;
+        }
+
         $parts = [];
-        foreach ($this->updatableColumns as $column) {
-            $parts[] = $column->getSQL() . ' = ?';
+        foreach ($this->updatableColumns as $i => $column) {
+            if ($this->updatableValues[$i] instanceof SQLableInterface) {
+                $parts[] = $column->getSQL() . ' = ' . $this->updatableValues[$i]->getSQL();
+            } else {
+                $parts[] = $column->getSQL() . ' = ?';
+            }
         }
 
         $sql .= 'SET ' . implode(', ', $parts) . PHP_EOL;
@@ -84,7 +98,7 @@ final class UpdateQueryStep2
 
     public function getBindValues(): array
     {
-        $binds = $this->updatableValues;
+        $binds = array_filter($this->updatableValues, fn($value) => !($value instanceof SQLableInterface));
 
         foreach ($this->conditions as $condition) {
             $binds = array_merge($binds, $condition->getBindValues());
