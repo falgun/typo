@@ -25,7 +25,8 @@ final class Column implements ColumnLikeInterface
         string $key,
         string $default,
         string $extra
-    ) {
+    )
+    {
         $this->name = $name;
         $this->alias = $alias;
         $this->type = $type;
@@ -42,7 +43,8 @@ final class Column implements ColumnLikeInterface
         string $key = '',
         string $default = '',
         string $extra = ''
-    ): static {
+    ): static
+    {
         return new static($name, $name, $type, $nullable, $key, $default, $extra);
     }
 
@@ -60,6 +62,11 @@ final class Column implements ColumnLikeInterface
         }
 
         return $this->name . ' as ' . $this->alias;
+    }
+
+    public function getBindValues(): array
+    {
+        return [];
     }
 
     /**

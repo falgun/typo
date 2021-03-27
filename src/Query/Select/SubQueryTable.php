@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace Falgun\Typo\Query\Select;
 
 use Falgun\Typo\Query\Select\SelectQueryStep2;
-use Falgun\Typo\Interfaces\ColumnLikeInterface;
+use Falgun\Typo\Interfaces\TableLikeInterface;
 
-final class SubQueryColumn implements ColumnLikeInterface
+final class SubQueryTable implements TableLikeInterface
 {
 
     private SelectQueryStep2 $selectQuery;
@@ -18,12 +18,12 @@ final class SubQueryColumn implements ColumnLikeInterface
         $this->alias = $alias;
     }
 
-    public static function fromQuery(SelectQueryStep2 $selectQuery): SubQueryColumn
+    public static function fromQuery(SelectQueryStep2 $selectQuery): SubQueryTable
     {
         return new static($selectQuery);
     }
 
-    public function as(string $alias): ColumnLikeInterface
+    public function as(string $alias): TableLikeInterface
     {
         $this->alias = $alias;
 

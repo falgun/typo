@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace Falgun\Typo\Query\Parts;
 
-final class OrderBy
+use Falgun\Typo\Interfaces\SQLableInterface;
+
+final class OrderBy implements SQLableInterface
 {
 
     const BY_ASC = 'ASC';
@@ -31,5 +33,10 @@ final class OrderBy
     public function getSQL(): string
     {
         return $this->column->getSQL() . ' ' . $this->sortDirection;
+    }
+
+    public function getBindValues(): array
+    {
+        return [];
     }
 }

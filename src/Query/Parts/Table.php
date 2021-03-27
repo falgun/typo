@@ -25,7 +25,7 @@ final class Table implements TableLikeInterface
         return new static($name);
     }
 
-    public function as(string $alias): self
+    public function as(string $alias): TableLikeInterface
     {
         $this->alias = $alias;
 
@@ -45,5 +45,10 @@ final class Table implements TableLikeInterface
     public function getSQL(): string
     {
         return ($this->alias ? $this->name . ' as ' . $this->alias : $this->name);
+    }
+
+    public function getBindValues(): array
+    {
+        return [];
     }
 }

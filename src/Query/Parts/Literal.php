@@ -38,4 +38,9 @@ final class Literal implements SQLableInterface
     {
         return (string) $this->value;
     }
+
+    public function getBindValues(): array
+    {
+        return [];
+    }
 }

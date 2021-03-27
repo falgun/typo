@@ -132,6 +132,11 @@ final class SelectQueryStep2 implements SQLableInterface
         return SubQueryColumn::fromQuery($this)->as($alias);
     }
 
+    public function asTable(string $alias): TableLikeInterface
+    {
+        return SubQueryTable::fromQuery($this)->as($alias);
+    }
+
     public function getSQL(): string
     {
         $sql = 'SELECT ';
@@ -160,10 +165,6 @@ final class SelectQueryStep2 implements SQLableInterface
             $sql .= PHP_EOL . 'LIMIT ' . $this->limit;
         }
 
-        if (isset($this->alias)) {
-            return "({$sql}) as {$this->alias}";
-        }
-
         return $sql;
     }
 
@@ -183,6 +184,12 @@ final class SelectQueryStep2 implements SQLableInterface
     public function getBindValues(): array
     {
         $binds = [];
+
+        foreach ($this->selectedColumns as $column) {
+            $binds = array_merge($binds, $column->getBindValues());
+        }
+
+        $binds = array_merge($binds, $this->table->getBindValues());
 
         foreach ($this->conditions as $condition) {
             $binds = array_merge($binds, $condition->getBindValues());

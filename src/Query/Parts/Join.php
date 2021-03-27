@@ -83,4 +83,9 @@ final class Join implements JoinInterface
 
         throw new \RuntimeException('JOIN must have atleast one condition or USING()');
     }
+
+    public function getBindValues(): array
+    {
+        return [];
+    }
 }
