@@ -1,4 +1,5 @@
 
+
 # Typo
 
 Type safe Query builder that tries to reduce typo.
@@ -17,6 +18,20 @@ $ composer require falgunphp/typo
 - Not stable for real usage.
 
 ## Usage
+
+Before starting using this library, please note that:
+- Typo tries to be a **Database First** ORM/Query Builder. You can't design DB schema with it. Schema related meta datas will be generated from existing database.
+- It tries to stay as close as possible to SQL syntax structure. As a result, code will look too verbose.
+
+To generate Metadatas for your DB, run (after installation):
+```bash
+vendor/bin/generate-typo-meta
+```
+Above script will ask for db credentials and metadata directory (where it will store files).
+Currently, Metadata classes have default namespace defined as `App\DB`. You can change it to suit your need but keep in mind re-running the generator script will **overwrite** your changes.
+
+Once metadatas are generated, we can start using Typo to build queries.
+
 ```php
 <?php
 use Falgun\Kuery\Kuery;

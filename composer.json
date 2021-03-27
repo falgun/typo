@@ -22,7 +22,8 @@
     },
     "require": {
         "php": "^8.0",
-        "falgunphp/kuery": "dev-master"
+        "falgunphp/kuery": "dev-master",
+        "falgunphp/typo-generator": "dev-main"
     },
     "require-dev": {
         "phpro/grumphp": "^1.3",
