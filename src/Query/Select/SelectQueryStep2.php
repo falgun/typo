@@ -130,25 +130,29 @@ final class SelectQueryStep2 implements SQLableInterface
     public function getSQL(): string
     {
         $sql = 'SELECT ';
-        $sql .= (implode(', ', array_map(fn(ColumnLikeInterface $column) => $column->getSQL(), $this->selectedColumns))) . PHP_EOL;
-        $sql .= 'FROM ' . $this->table->getSQL() . PHP_EOL;
+        $sql .= (implode(', ', array_map(fn(ColumnLikeInterface $column) => $column->getSQL(), $this->selectedColumns)));
+        $sql .= PHP_EOL . 'FROM ' . $this->table->getSQL();
 
         foreach ($this->joins as $join) {
-            $sql .= $join->getSQL() . PHP_EOL;
+            $sql .= PHP_EOL . $join->getSQL();
         }
 
         if ($this->conditions !== []) {
-            $sql .= 'WHERE ' . (implode(' ', array_map(fn(ConditionInterface $condition) => $condition->getSQL(), $this->conditions))) . PHP_EOL;
+            $sql .= PHP_EOL .
+                'WHERE ' .
+                (implode(' ', array_map(fn(ConditionInterface $condition) => $condition->getSQL(), $this->conditions)));
         }
 
         if ($this->orderBys !== []) {
-            $sql .= 'ORDER BY ' . (implode(' ', array_map(fn(OrderBy $orderBy) => $orderBy->getSQL(), $this->orderBys))) . PHP_EOL;
+            $sql .= PHP_EOL .
+                'ORDER BY ' .
+                (implode(' ', array_map(fn(OrderBy $orderBy) => $orderBy->getSQL(), $this->orderBys)));
         }
 
         if (isset($this->offset) && isset($this->limit)) {
-            $sql .= 'LIMIT ' . $this->offset . ', ' . $this->limit;
+            $sql .= PHP_EOL . 'LIMIT ' . $this->offset . ', ' . $this->limit;
         } elseif (isset($this->limit)) {
-            $sql .= 'LIMIT ' . $this->limit;
+            $sql .= PHP_EOL . 'LIMIT ' . $this->limit;
         }
 
         if (isset($this->alias)) {

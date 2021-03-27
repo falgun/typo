@@ -68,7 +68,6 @@ final class BasicSelectQueryTest extends AbstractIntegrationTest
             FROM users
             JOIN posts ON posts.user_id = users.id
             ORDER BY posts.id ASC
-            
             SQL,
             $query->getSQL()
         );

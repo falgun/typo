@@ -31,7 +31,6 @@ final class JoinQueryTest extends AbstractIntegrationTest
             SELECT users.id, posts.title
             FROM users
             JOIN posts ON posts.user_id = users.id
-            
             SQL,
             $query->getSQL()
         );
@@ -62,7 +61,6 @@ final class JoinQueryTest extends AbstractIntegrationTest
             SELECT users.id, posts.title
             FROM users
             INNER JOIN posts ON posts.user_id = users.id
-            
             SQL,
             $query->getSQL()
         );
@@ -93,7 +91,6 @@ final class JoinQueryTest extends AbstractIntegrationTest
             SELECT users.id, posts.title
             FROM users
             LEFT JOIN posts ON posts.user_id = users.id
-            
             SQL,
             $query->getSQL()
         );
@@ -124,7 +121,6 @@ final class JoinQueryTest extends AbstractIntegrationTest
             SELECT users.id, u2.name
             FROM users
             JOIN users as u2 ON u2.id = users.id
-            
             SQL,
             $query->getSQL()
         );
@@ -155,7 +151,6 @@ final class JoinQueryTest extends AbstractIntegrationTest
             SELECT users.id, posts.title
             FROM users
             JOIN posts USING (id)
-
             SQL,
             $query->getSQL()
         );
