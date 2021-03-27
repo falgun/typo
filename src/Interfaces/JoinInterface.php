@@ -13,4 +13,6 @@ interface JoinInterface extends SQLableInterface
     public function asLeft(): JoinInterface;
 
     public function on(ConditionInterface $condition): JoinInterface;
+
+    public function using(ColumnLikeInterface $column): JoinInterface;
 }

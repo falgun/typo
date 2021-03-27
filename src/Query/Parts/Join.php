@@ -7,6 +7,7 @@ use Falgun\Typo\Conditions\Equal;
 use Falgun\Typo\Interfaces\JoinInterface;
 use Falgun\Typo\Conditions\ConditionInterface;
 use Falgun\Typo\Interfaces\TableLikeInterface;
+use Falgun\Typo\Interfaces\ColumnLikeInterface;
 
 final class Join implements JoinInterface
 {
@@ -17,24 +18,25 @@ final class Join implements JoinInterface
 
     private string $type;
     private TableLikeInterface $table;
-    private ConditionInterface $condition;
+    private ?ConditionInterface $condition;
+    private ?ColumnLikeInterface $usingColumn;
 
     /**
      *
      * @param self::TYPE_DEFAULT|self::TYPE_INNER|self::TYPE_LEFT $type
      * @param TableLikeInterface $table
-     * @param ConditionInterface $condition
      */
-    private function __construct(string $type, TableLikeInterface $table, ConditionInterface $condition)
+    private function __construct(string $type, TableLikeInterface $table)
     {
         $this->type = $type;
         $this->table = $table;
-        $this->condition = $condition;
+        $this->condition = null;
+        $this->usingColumn = null;
     }
 
     public static function new(TableLikeInterface $table): static
     {
-        return new static(self::TYPE_DEFAULT, $table, Equal::fromSides(Literal::from(1), Literal::from(1)));
+        return new static(self::TYPE_DEFAULT, $table);
     }
 
     public function asInner(): JoinInterface
@@ -60,9 +62,25 @@ final class Join implements JoinInterface
         return $this;
     }
 
+    public function using(ColumnLikeInterface $column): JoinInterface
+    {
+        $this->usingColumn = $column;
+
+        return $this;
+    }
+
     public function getSQL(): string
     {
-        return ($this->type ? $this->type . ' ' : '') .
-            'JOIN ' . $this->table->getSQL() . ' ON ' . $this->condition->getSQL();
+        $sql = ($this->type ? $this->type . ' ' : '') .
+            'JOIN ' . $this->table->getSQL();
+
+        if (isset($this->condition)) {
+            return $sql . ' ON ' . $this->condition->getSQL();
+        } elseif (isset($this->usingColumn)) {
+            // nasty explode right here :p
+            return $sql . ' USING (' . explode('.', $this->usingColumn->getSQL())[1] . ')';
+        }
+
+        throw new \RuntimeException('JOIN must have atleast one condition or USING()');
     }
 }

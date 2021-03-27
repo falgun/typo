@@ -134,4 +134,35 @@ final class JoinQueryTest extends AbstractIntegrationTest
             $query->getBindValues()
         );
     }
+
+    public function testJoinWithUsing()
+    {
+        $builder = $this->getBuilder();
+
+        $userMeta = UsersMeta::new();
+        $postMeta = PostsMeta::new();
+
+        $query = $builder
+            ->select(
+                $userMeta->id(),
+                $postMeta->title(),
+            )
+            ->from($userMeta->table())
+            ->join($postMeta->table()->using($userMeta->id()));
+
+        $this->assertSame(
+            <<<SQL
+            SELECT users.id, posts.title
+            FROM users
+            JOIN posts USING (id)
+
+            SQL,
+            $query->getSQL()
+        );
+
+        $this->assertSame(
+            [],
+            $query->getBindValues()
+        );
+    }
 }

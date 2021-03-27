@@ -6,6 +6,7 @@ namespace Falgun\Typo\Query\Parts;
 use Falgun\Typo\Interfaces\JoinInterface;
 use Falgun\Typo\Conditions\ConditionInterface;
 use Falgun\Typo\Interfaces\TableLikeInterface;
+use Falgun\Typo\Interfaces\ColumnLikeInterface;
 
 final class Table implements TableLikeInterface
 {
@@ -34,6 +35,11 @@ final class Table implements TableLikeInterface
     public function on(ConditionInterface $condition): JoinInterface
     {
         return Join::new($this)->on($condition);
+    }
+
+    public function using(ColumnLikeInterface $column): JoinInterface
+    {
+        return Join::new($this)->using($column);
     }
 
     public function getSQL(): string
