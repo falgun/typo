@@ -127,10 +127,15 @@ final class SelectQueryStep2 implements SQLableInterface
         return $this->kuery->fetchAllAsArray($stmt);
     }
 
+    public function as(string $alias): ColumnLikeInterface
+    {
+        return SubQueryColumn::fromQuery($this)->as($alias);
+    }
+
     public function getSQL(): string
     {
         $sql = 'SELECT ';
-        $sql .= (implode(', ', array_map(fn(ColumnLikeInterface $column) => $column->getSQL(), $this->selectedColumns)));
+        $sql .= $this->getColumnListAsSQL();
         $sql .= PHP_EOL . 'FROM ' . $this->table->getSQL();
 
         foreach ($this->joins as $join) {
@@ -160,6 +165,19 @@ final class SelectQueryStep2 implements SQLableInterface
         }
 
         return $sql;
+    }
+
+    private function getColumnListAsSQL(): string
+    {
+        // here be dragon
+        return (implode(', ',
+                array_map(function (ColumnLikeInterface $column): string {
+                    if ($column instanceof SelectQueryStep2) {
+                        return '(' . $column->getSQL() . ')';
+                    }
+                    return $column->getSQL();
+                }, $this->selectedColumns)
+        ));
     }
 
     public function getBindValues(): array

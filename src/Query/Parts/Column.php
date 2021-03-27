@@ -46,7 +46,7 @@ final class Column implements ColumnLikeInterface
         return new static($name, $name, $type, $nullable, $key, $default, $extra);
     }
 
-    public function as(string $alias): self
+    public function as(string $alias): ColumnLikeInterface
     {
         $this->alias = $alias;
 
