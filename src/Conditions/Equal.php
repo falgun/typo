@@ -8,6 +8,11 @@ use Falgun\Typo\Interfaces\SQLableInterface;
 final class Equal implements ConditionInterface
 {
 
+    private const TYPE_DEFAULT = '';
+    private const TYPE_AND = 'AND';
+    private const TYPE_OR = 'OR';
+
+    private string $type;
     private SQLableInterface $sideA;
 
     /**
@@ -23,6 +28,7 @@ final class Equal implements ConditionInterface
      */
     private function __construct(SQLableInterface $sideA, $sideB)
     {
+        $this->type = self::TYPE_DEFAULT;
         $this->sideA = $sideA;
         $this->sideB = $sideB;
     }
@@ -39,6 +45,24 @@ final class Equal implements ConditionInterface
         return new static($sideA, $sideB);
     }
 
+    public function asAnd(): ConditionInterface
+    {
+        $orCondition = clone $this;
+
+        $orCondition->type = self::TYPE_AND;
+
+        return $orCondition;
+    }
+
+    public function asOr(): ConditionInterface
+    {
+        $orCondition = clone $this;
+
+        $orCondition->type = self::TYPE_OR;
+
+        return $orCondition;
+    }
+
     public function getSQL(): string
     {
         if (is_object($this->sideB) && $this->sideB instanceof SQLableInterface) {
@@ -47,7 +71,8 @@ final class Equal implements ConditionInterface
             $placeholderSQL = '?';
         }
 
-        return $this->sideA->getSQL() . ' = ' . $placeholderSQL;
+        return ($this->type ? ($this->type . ' ') : '')
+            . $this->sideA->getSQL() . ' = ' . $placeholderSQL;
     }
 
     public function getBindValues(): array

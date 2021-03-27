@@ -55,14 +55,15 @@ $users = $builder
         $userMeta->username(),
     )
     ->from($userMeta->table())
-    ->where($userMeta->id()->eq($userID))
+    ->where($userMeta->id()->eq(12))
+    ->orWhere($userMeta->id()->eq(13))
     ->orderBy($userMeta->id())
     ->limit(0, 100)
     ->fetch();
 // This one will run below SQL
 SELECT users.id, users.name as full_name, users.username
 FROM users
-WHERE users.id = ?
+WHERE users.id = ? OR users.id = ?
 ORDER BY users.id ASC
 LIMIT 0, 100
 

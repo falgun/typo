@@ -71,7 +71,25 @@ final class SelectQueryStep2 implements SQLableInterface
 
     public function where(ConditionInterface $condition): SelectQueryStep2
     {
-        $this->conditions[] = $condition;
+        if (empty($this->conditions)) {
+            $this->conditions[] = $condition;
+        } else {
+            $this->conditions[] = $condition->asAnd();
+        }
+
+        return $this;
+    }
+
+    public function andWhere(ConditionInterface $condition): SelectQueryStep2
+    {
+        $this->conditions[] = $condition->asAnd();
+
+        return $this;
+    }
+
+    public function orWhere(ConditionInterface $condition): SelectQueryStep2
+    {
+        $this->conditions[] = $condition->asOr();
 
         return $this;
     }
@@ -113,7 +131,7 @@ final class SelectQueryStep2 implements SQLableInterface
         }
 
         if ($this->conditions !== []) {
-            $sql .= 'WHERE ' . (implode(' AND ', array_map(fn(ConditionInterface $condition) => $condition->getSQL(), $this->conditions))) . PHP_EOL;
+            $sql .= 'WHERE ' . (implode(' ', array_map(fn(ConditionInterface $condition) => $condition->getSQL(), $this->conditions))) . PHP_EOL;
         }
 
         if ($this->orderBys !== []) {
