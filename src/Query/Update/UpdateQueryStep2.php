@@ -7,7 +7,7 @@ use Falgun\Kuery\Kuery;
 use Falgun\Typo\Query\Parts\Table;
 use Falgun\Typo\Query\Parts\Column;
 use Falgun\Typo\Interfaces\SQLableInterface;
-use Falgun\Typo\Conditions\ConditionInterface;
+use Falgun\Typo\Interfaces\ConditionInterface;
 
 final class UpdateQueryStep2 implements SQLableInterface
 {

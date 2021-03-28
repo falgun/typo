@@ -5,7 +5,7 @@ namespace Falgun\Typo\Query\Parts;
 
 use Falgun\Typo\Conditions\Equal;
 use Falgun\Typo\Interfaces\JoinInterface;
-use Falgun\Typo\Conditions\ConditionInterface;
+use Falgun\Typo\Interfaces\ConditionInterface;
 use Falgun\Typo\Interfaces\TableLikeInterface;
 use Falgun\Typo\Interfaces\ColumnLikeInterface;
 

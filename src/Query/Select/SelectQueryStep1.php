@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Falgun\Typo\Query\Select;
 
 use Falgun\Kuery\Kuery;
-use Falgun\Typo\Conditions\ConditionInterface;
+use Falgun\Typo\Interfaces\ConditionInterface;
 use Falgun\Typo\Interfaces\TableLikeInterface;
 use Falgun\Typo\Interfaces\ColumnLikeInterface;
 

@@ -5,6 +5,7 @@ namespace Falgun\Typo\Conditions;
 
 use Falgun\Typo\Interfaces\SQLableInterface;
 use Falgun\Typo\Interfaces\SubQueryInterface;
+use Falgun\Typo\Interfaces\ConditionInterface;
 
 final class Equal implements ConditionInterface
 {
