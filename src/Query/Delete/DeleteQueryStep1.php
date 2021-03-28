@@ -5,7 +5,7 @@ namespace Falgun\Typo\Query\Delete;
 
 use Falgun\Kuery\Kuery;
 use Falgun\Typo\Query\Parts\Table;
-use Falgun\Typo\Query\Parts\Column;
+use Falgun\Typo\Interfaces\JoinInterface;
 use Falgun\Typo\Conditions\ConditionInterface;
 
 final class DeleteQueryStep1
@@ -17,10 +17,15 @@ final class DeleteQueryStep1
     /** @psalm-suppress PropertyNotSetInConstructor */
     private Table $table;
 
+    /**
+     * @var array<int, JoinInterface>
+     */
+    private array $joins;
+
     /** @psalm-suppress PropertyNotSetInConstructor */
     private function __construct()
     {
-        
+        $this->joins = [];
     }
 
     public static function fromTable(Kuery $kuery, Table $table): static
@@ -32,11 +37,33 @@ final class DeleteQueryStep1
         return $object;
     }
 
+    public function join(JoinInterface $join): DeleteQueryStep1
+    {
+        $this->joins[] = $join;
+
+        return $this;
+    }
+
+    public function innerJoin(JoinInterface $join): DeleteQueryStep1
+    {
+        $this->joins[] = $join->asInner();
+
+        return $this;
+    }
+
+    public function leftJoin(JoinInterface $join): DeleteQueryStep1
+    {
+        $this->joins[] = $join->asLeft();
+
+        return $this;
+    }
+
     public function where(ConditionInterface $condition): DeleteQueryStep2
     {
         return DeleteQueryStep2::fromCondition(
                 $this->kuery,
                 $this->table,
+                $this->joins,
                 $condition,
         );
     }

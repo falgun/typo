@@ -18,6 +18,9 @@ final class DeleteQueryStep2
     private Table $table;
 
     /** @psalm-suppress PropertyNotSetInConstructor */
+    private array $joins;
+
+    /** @psalm-suppress PropertyNotSetInConstructor */
     private array $conditions;
 
     /** @psalm-suppress PropertyNotSetInConstructor */
@@ -29,12 +32,14 @@ final class DeleteQueryStep2
     public static function fromCondition(
         Kuery $kuery,
         Table $table,
+        array $joins,
         ConditionInterface $condition
     ): static
     {
         $object = new static;
         $object->kuery = $kuery;
         $object->table = $table;
+        $object->joins = $joins;
         $object->conditions[] = $condition;
 
         return $object;
@@ -57,6 +62,10 @@ final class DeleteQueryStep2
     public function getSQL(): string
     {
         $sql = 'DELETE FROM ' . $this->table->getSQL() . PHP_EOL;
+
+        foreach ($this->joins as $join) {
+            $sql .= $join->getSQL() . PHP_EOL;
+        }
 
         if ($this->conditions !== []) {
             $sql .= 'WHERE ' . (implode(
