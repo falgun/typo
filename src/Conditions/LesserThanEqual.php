@@ -6,11 +6,11 @@ namespace Falgun\Typo\Conditions;
 use Falgun\Typo\Interfaces\SQLableInterface;
 use Falgun\Typo\Interfaces\ConditionInterface;
 
-final class Equal extends AbstractCompareCondition implements ConditionInterface
+final class LesserThanEqual extends AbstractCompareCondition implements ConditionInterface
 {
 
     protected function getConditionSQL(SQLableInterface $sideA, string $placeholderSQL): string
     {
-        return $sideA->getSQL() . ' = ' . $placeholderSQL;
+        return $sideA->getSQL() . ' <= ' . $placeholderSQL;
     }
 }

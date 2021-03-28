@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace Falgun\Typo\Conditions;
 
+use Falgun\Typo\Conditions\Between;
 use Falgun\Typo\Interfaces\SQLableInterface;
-use Falgun\Typo\Interfaces\ConditionInterface;
 
-final class Equal extends AbstractCompareCondition implements ConditionInterface
+final class NotBetween extends Between
 {
 
     protected function getConditionSQL(SQLableInterface $sideA, string $placeholderSQL): string
     {
-        return $sideA->getSQL() . ' = ' . $placeholderSQL;
+        return $sideA->getSQL() . ' NOT BETWEEN ' . $placeholderSQL;
     }
 }

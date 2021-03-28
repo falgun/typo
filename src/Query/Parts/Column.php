@@ -3,7 +3,22 @@ declare(strict_types=1);
 
 namespace Falgun\Typo\Query\Parts;
 
+use Falgun\Typo\Conditions\In;
+use Falgun\Typo\Conditions\Like;
+use Falgun\Typo\Conditions\NotIn;
 use Falgun\Typo\Conditions\Equal;
+use Falgun\Typo\Conditions\IsNull;
+use Falgun\Typo\Conditions\NotLike;
+use Falgun\Typo\Conditions\Between;
+use Falgun\Typo\Query\Parts\Literal;
+use Falgun\Typo\Conditions\NotEqual;
+use Falgun\Typo\Conditions\IsNotNull;
+use Falgun\Typo\Conditions\NotBetween;
+use Falgun\Typo\Conditions\LesserThan;
+use Falgun\Typo\Conditions\GreaterThan;
+use Falgun\Typo\Conditions\LesserThanEqual;
+use Falgun\Typo\Conditions\GreaterThanEqual;
+use Falgun\Typo\Interfaces\ConditionInterface;
 use Falgun\Typo\Interfaces\ColumnLikeInterface;
 
 final class Column implements ColumnLikeInterface
@@ -70,13 +85,124 @@ final class Column implements ColumnLikeInterface
     }
 
     /**
-     *
      * @param mixed $value
      *
-     * @return Equal
+     * @return ConditionInterface
      */
-    public function eq($value): Equal
+    public function eq($value): ConditionInterface
     {
         return Equal::fromSides($this, $value);
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return ConditionInterface
+     */
+    public function neq($value): ConditionInterface
+    {
+        return NotEqual::fromSides($this, $value);
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return ConditionInterface
+     */
+    public function gt($value): ConditionInterface
+    {
+        return GreaterThan::fromSides($this, $value);
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return ConditionInterface
+     */
+    public function gte($value): ConditionInterface
+    {
+        return GreaterThanEqual::fromSides($this, $value);
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return ConditionInterface
+     */
+    public function lt($value): ConditionInterface
+    {
+        return LesserThan::fromSides($this, $value);
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return ConditionInterface
+     */
+    public function lte($value): ConditionInterface
+    {
+        return LesserThanEqual::fromSides($this, $value);
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return ConditionInterface
+     */
+    public function in($value): ConditionInterface
+    {
+        return In::fromSides($this, $value);
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return ConditionInterface
+     */
+    public function notIn($value): ConditionInterface
+    {
+        return NotIn::fromSides($this, $value);
+    }
+
+    /**
+     * @param string|int|float $valueA
+     * @param string|int|float $valueB
+     *
+     * @return ConditionInterface
+     */
+    public function between(string|int|float $valueA, string|int|float $valueB): ConditionInterface
+    {
+        return Between::fromSides($this, $valueA, $valueB);
+    }
+
+    /**
+     * @param string|int|float $valueA
+     * @param string|int|float $valueB
+     *
+     * @return ConditionInterface
+     */
+    public function notBetween(string|int|float $valueA, string|int|float $valueB): ConditionInterface
+    {
+        return NotBetween::fromSides($this, $valueA, $valueB);
+    }
+
+    public function isNull(): ConditionInterface
+    {
+        return IsNull::fromSides($this, Literal::from(''));
+    }
+
+    public function isNotNull(): ConditionInterface
+    {
+        return IsNotNull::fromSides($this, Literal::from(''));
+    }
+
+    public function like(string $value): ConditionInterface
+    {
+        return Like::fromSides($this, $value);
+    }
+
+    public function notLike(string $value): ConditionInterface
+    {
+        return NotLike::fromSides($this, $value);
     }
 }

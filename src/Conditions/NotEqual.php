@@ -6,11 +6,12 @@ namespace Falgun\Typo\Conditions;
 use Falgun\Typo\Interfaces\SQLableInterface;
 use Falgun\Typo\Interfaces\ConditionInterface;
 
-final class Equal extends AbstractCompareCondition implements ConditionInterface
+final class NotEqual extends AbstractCompareCondition implements ConditionInterface
 {
 
     protected function getConditionSQL(SQLableInterface $sideA, string $placeholderSQL): string
     {
-        return $sideA->getSQL() . ' = ' . $placeholderSQL;
+        // we are using <> here, as it is sql standard, however mysql supports != too
+        return $sideA->getSQL() . ' <> ' . $placeholderSQL;
     }
 }
