@@ -73,11 +73,21 @@ abstract class AbstractCompareCondition implements ConditionInterface
         if (is_object($this->sideB) && $this->sideB instanceof SQLableInterface) {
             $placeholderSQL = $this->sideB->getSQL();
         } else {
-            $placeholderSQL = '?';
+            $placeholderSQL = $this->prepareValuePlaceholder($this->sideB);
         }
 
         return ($this->type ? ($this->type . ' ') : '') .
             $this->getConditionSQL($this->sideA, $placeholderSQL);
+    }
+
+    /**
+     * @param mixed $sideB
+     *
+     * @return string
+     */
+    protected function prepareValuePlaceholder($sideB): string
+    {
+        return '?';
     }
 
     protected abstract function getConditionSQL(SQLableInterface $sideA, string $placeholderSQL): string;
@@ -92,6 +102,16 @@ abstract class AbstractCompareCondition implements ConditionInterface
             return [];
         }
 
-        return [$this->sideB];
+        return $this->prepareBindValues($this->sideB);
+    }
+
+    /**
+     * @param mixed $sideB
+     *
+     * @return array
+     */
+    protected function prepareBindValues($sideB): array
+    {
+        return [$sideB];
     }
 }
