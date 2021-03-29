@@ -13,32 +13,36 @@ final class Collection
      * @var array<int, SQLableInterface>
      */
     private array $parts;
-    private string $type;
+    private string $prefix;
 
     /**
      * 
      * @param array<int, SQLableInterface> $parts
-     * @param string $type
+     * @param string $prefix
      */
-    private function __construct(array $parts, string $type)
+    private function __construct(array $parts, string $prefix)
     {
         $this->parts = $parts;
-        $this->type = $type;
+        $this->prefix = $prefix;
     }
 
     /**
      * 
      * @param array<int, SQLableInterface> $parts
-     * @param string $type
+     * @param string $prefix
      */
-    public static function from(array $parts, string $type): Collection
+    public static function from(array $parts, string $prefix): Collection
     {
-        return new static($parts, $type);
+        return new static($parts, $prefix);
     }
 
     public function join(string $seperator = ', '): string
     {
-        return $this->type . ' ' .
+        if ($this->parts === []) {
+            return '';
+        }
+
+        return ($this->prefix ? $this->prefix . ' ' : '') .
             implode(
                 $seperator,
                 array_map(

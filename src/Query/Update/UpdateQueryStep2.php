@@ -5,7 +5,7 @@ namespace Falgun\Typo\Query\Update;
 
 use Falgun\Kuery\Kuery;
 use Falgun\Typo\Query\Parts\Table;
-use Falgun\Typo\Query\Parts\Column;
+use Falgun\Typo\Query\Parts\Collection;
 use Falgun\Typo\Interfaces\SQLableInterface;
 use Falgun\Typo\Interfaces\ConditionInterface;
 
@@ -87,13 +87,12 @@ final class UpdateQueryStep2 implements SQLableInterface
             }
         }
 
-        $sql .= 'SET ' . implode(', ', $parts) . PHP_EOL;
+        $sql .= 'SET ' . implode(', ', $parts);
 
-        if ($this->conditions !== []) {
-            $sql .= 'WHERE ' . (implode(' AND ', array_map(fn(ConditionInterface $condition) => $condition->getSQL(), $this->conditions))) . ' ';
-        }
+        $sql .= Collection::from($this->conditions, PHP_EOL . 'WHERE')
+            ->join(' ');
 
-        return trim($sql);
+        return $sql;
     }
 
     public function getBindValues(): array

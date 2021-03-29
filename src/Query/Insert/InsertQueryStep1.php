@@ -6,6 +6,7 @@ namespace Falgun\Typo\Query\Insert;
 use Falgun\Kuery\Kuery;
 use Falgun\Typo\Query\Parts\Table;
 use Falgun\Typo\Query\Parts\Column;
+use Falgun\Typo\Query\Parts\Collection;
 
 final class InsertQueryStep1
 {
@@ -66,7 +67,7 @@ final class InsertQueryStep1
     public function getSQL(): string
     {
         $sql = 'INSERT INTO ' . $this->table->getSQL() . ' (' .
-            implode(', ', $this->getSqlFromColumnArray()) .
+            Collection::from($this->columns, '')->join() .
             ') VALUES ';
 
         foreach ($this->valueSet as $values) {

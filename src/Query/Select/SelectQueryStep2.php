@@ -142,25 +142,19 @@ final class SelectQueryStep2 implements SQLableInterface
 
     public function getSQL(): string
     {
-        $sql = 'SELECT ';
-        $sql .= $this->getColumnListAsSQL();
-        $sql .= PHP_EOL . 'FROM ' . $this->table->getSQL();
+        $sql = Collection::from($this->selectedColumns, 'SELECT')
+                ->join() . PHP_EOL;
+        $sql .= 'FROM ' . $this->table->getSQL();
 
         foreach ($this->joins as $join) {
             $sql .= PHP_EOL . $join->getSQL();
         }
 
-        if ($this->conditions !== []) {
-            $sql .= PHP_EOL .
-                'WHERE ' .
-                (implode(' ', array_map(fn(ConditionInterface $condition) => $condition->getSQL(), $this->conditions)));
-        }
+        $sql .= Collection::from($this->conditions, PHP_EOL . 'WHERE')
+            ->join(' ');
 
-        if ($this->orderBys !== []) {
-            $sql .= PHP_EOL .
-                    Collection::from($this->orderBys, 'ORDER BY')
-                    ->join();
-        }
+        $sql .= Collection::from($this->orderBys, PHP_EOL . 'ORDER BY')
+            ->join();
 
         if (isset($this->offset) && isset($this->limit)) {
             $sql .= PHP_EOL . 'LIMIT ' . $this->offset . ', ' . $this->limit;
@@ -169,19 +163,6 @@ final class SelectQueryStep2 implements SQLableInterface
         }
 
         return $sql;
-    }
-
-    private function getColumnListAsSQL(): string
-    {
-        // here be dragon
-        return (implode(', ',
-                array_map(function (ColumnLikeInterface $column): string {
-                    if ($column instanceof SelectQueryStep2) {
-                        return '(' . $column->getSQL() . ')';
-                    }
-                    return $column->getSQL();
-                }, $this->selectedColumns)
-        ));
     }
 
     public function getBindValues(): array

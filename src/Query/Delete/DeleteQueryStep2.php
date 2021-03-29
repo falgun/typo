@@ -5,7 +5,7 @@ namespace Falgun\Typo\Query\Delete;
 
 use Falgun\Kuery\Kuery;
 use Falgun\Typo\Query\Parts\Table;
-use Falgun\Typo\Query\Parts\Column;
+use Falgun\Typo\Query\Parts\Collection;
 use Falgun\Typo\Interfaces\ConditionInterface;
 
 final class DeleteQueryStep2
@@ -61,21 +61,14 @@ final class DeleteQueryStep2
 
     public function getSQL(): string
     {
-        $sql = 'DELETE FROM ' . $this->table->getSQL() . PHP_EOL;
+        $sql = 'DELETE FROM ' . $this->table->getSQL();
 
         foreach ($this->joins as $join) {
-            $sql .= $join->getSQL() . PHP_EOL;
+            $sql .= PHP_EOL . $join->getSQL();
         }
 
-        if ($this->conditions !== []) {
-            $sql .= 'WHERE ' . (implode(
-                    ' AND ',
-                    array_map(
-                        fn(ConditionInterface $condition): string => $condition->getSQL(),
-                        $this->conditions
-                    )
-            ));
-        }
+        $sql .= Collection::from($this->conditions, PHP_EOL . 'WHERE')
+            ->join(' ');
 
         return $sql;
     }

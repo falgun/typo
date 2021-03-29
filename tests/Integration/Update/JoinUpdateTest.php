@@ -7,7 +7,7 @@ use Falgun\Typo\Tests\Stubs\Metas\UsersMeta;
 use Falgun\Typo\Tests\Stubs\Metas\PostsMeta;
 use Falgun\Typo\Tests\Integration\AbstractIntegrationTest;
 
-final class JoinQueryTest extends AbstractIntegrationTest
+final class JoinUpdateTest extends AbstractIntegrationTest
 {
 
     public function testDefaultJoin()
