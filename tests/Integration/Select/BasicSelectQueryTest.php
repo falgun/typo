@@ -24,7 +24,7 @@ final class BasicSelectQueryTest extends AbstractIntegrationTest
             )
             ->from($userMeta->table())
             ->where($userMeta->id()->eq(1))
-            ->orderBy($userMeta->id())
+            ->orderBy($userMeta->id()->asc())
             ->limit(0, 100);
 
         $this->assertSame(
@@ -60,14 +60,14 @@ final class BasicSelectQueryTest extends AbstractIntegrationTest
             )
             ->from($userMeta->table())
             ->join($postMeta->table()->on($postMeta->user_id()->eq($userMeta->id())))
-            ->orderBy($postMeta->id());
+            ->orderBy($postMeta->id()->desc());
 
         $this->assertSame(
             <<<SQL
             SELECT users.id, users.name as full_name, users.username, posts.title
             FROM users
             JOIN posts ON posts.user_id = users.id
-            ORDER BY posts.id ASC
+            ORDER BY posts.id DESC
             SQL,
             $query->getSQL()
         );

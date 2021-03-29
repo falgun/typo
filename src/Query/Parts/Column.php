@@ -11,6 +11,7 @@ use Falgun\Typo\Conditions\IsNull;
 use Falgun\Typo\Conditions\NotLike;
 use Falgun\Typo\Conditions\Between;
 use Falgun\Typo\Query\Parts\Literal;
+use Falgun\Typo\Query\Parts\OrderBy;
 use Falgun\Typo\Conditions\NotEqual;
 use Falgun\Typo\Conditions\IsNotNull;
 use Falgun\Typo\Conditions\NotBetween;
@@ -18,6 +19,7 @@ use Falgun\Typo\Conditions\LesserThan;
 use Falgun\Typo\Conditions\GreaterThan;
 use Falgun\Typo\Conditions\LesserThanEqual;
 use Falgun\Typo\Conditions\GreaterThanEqual;
+use Falgun\Typo\Interfaces\OrderByInterface;
 use Falgun\Typo\Interfaces\ConditionInterface;
 use Falgun\Typo\Interfaces\ColumnLikeInterface;
 
@@ -204,5 +206,15 @@ final class Column implements ColumnLikeInterface
     public function notLike(string $value): ConditionInterface
     {
         return NotLike::fromSides($this, $value);
+    }
+
+    public function asc(): OrderByInterface
+    {
+        return OrderBy::asc($this);
+    }
+
+    public function desc(): OrderByInterface
+    {
+        return OrderBy::desc($this);
     }
 }

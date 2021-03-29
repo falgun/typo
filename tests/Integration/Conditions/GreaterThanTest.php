@@ -24,7 +24,7 @@ final class GreaterThanTest extends AbstractIntegrationTest
             ->orWhere($userMeta->id()->gt(
                 $builder->select($postMeta->id())
                 ->from($postMeta->table())
-                ->orderBy($postMeta->id())
+                ->orderBy($postMeta->id()->asc())
                 ->limit(1)
                 ->as('')
         ));

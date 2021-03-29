@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace Falgun\Typo\Query\Select;
 
 use Falgun\Kuery\Kuery;
-use Falgun\Typo\Query\Parts\Column;
-use Falgun\Typo\Query\Parts\OrderBy;
+use Falgun\Typo\Query\Parts\Collection;
 use Falgun\Typo\Interfaces\JoinInterface;
+use Falgun\Typo\Interfaces\OrderByInterface;
 use Falgun\Typo\Interfaces\SQLableInterface;
 use Falgun\Typo\Interfaces\ConditionInterface;
 use Falgun\Typo\Interfaces\TableLikeInterface;
@@ -30,7 +30,10 @@ final class SelectQueryStep2 implements SQLableInterface
     /** @psalm-suppress PropertyNotSetInConstructor */
     private array $conditions = [];
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @var array<int, OrderByInterface>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private array $orderBys = [];
 
     /** @psalm-suppress PropertyNotSetInConstructor */
@@ -101,9 +104,9 @@ final class SelectQueryStep2 implements SQLableInterface
         return $this;
     }
 
-    public function orderBy(Column $column): SelectQueryStep2
+    public function orderBy(OrderByInterface $orderBy, OrderByInterface ...$orderBys): SelectQueryStep2
     {
-        $this->orderBys[] = OrderBy::asc($column);
+        $this->orderBys = [...$this->orderBys, $orderBy, ... $orderBys];
 
         return $this;
     }
@@ -155,8 +158,8 @@ final class SelectQueryStep2 implements SQLableInterface
 
         if ($this->orderBys !== []) {
             $sql .= PHP_EOL .
-                'ORDER BY ' .
-                (implode(' ', array_map(fn(OrderBy $orderBy) => $orderBy->getSQL(), $this->orderBys)));
+                    Collection::from($this->orderBys, 'ORDER BY')
+                    ->join();
         }
 
         if (isset($this->offset) && isset($this->limit)) {

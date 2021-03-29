@@ -24,7 +24,7 @@ final class LesserThanTest extends AbstractIntegrationTest
             ->orWhere($userMeta->id()->lt(
                 $builder->select($postMeta->id())
                 ->from($postMeta->table())
-                ->orderBy($postMeta->id())
+                ->orderBy($postMeta->id()->desc())
                 ->limit(1)
                 ->as('')
         ));
@@ -35,7 +35,7 @@ final class LesserThanTest extends AbstractIntegrationTest
             FROM users
             WHERE users.id < ? OR users.id < (SELECT posts.id
             FROM posts
-            ORDER BY posts.id ASC
+            ORDER BY posts.id DESC
             LIMIT 1)
             SQL,
             $query->getSQL()
