@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Falgun\Typo\Query\Select;
 
 use Falgun\Kuery\Kuery;
+use Falgun\Typo\Query\Parts\Column;
 use Falgun\Typo\Query\Parts\Collection;
 use Falgun\Typo\Interfaces\JoinInterface;
 use Falgun\Typo\Interfaces\OrderByInterface;
@@ -35,6 +36,12 @@ final class SelectQueryStep2 implements SQLableInterface
      * @psalm-suppress PropertyNotSetInConstructor
      */
     private array $orderBys = [];
+
+    /**
+     * @var array<int, Column>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
+    private array $groupBys = [];
 
     /** @psalm-suppress PropertyNotSetInConstructor */
     private int $offset;
@@ -111,6 +118,13 @@ final class SelectQueryStep2 implements SQLableInterface
         return $this;
     }
 
+    public function groupBy(Column $groupBy, Column ...$groupBys): SelectQueryStep2
+    {
+        $this->groupBys = [...$this->groupBys, $groupBy, ... $groupBys];
+
+        return $this;
+    }
+
     public function limit(int $offsetOrLimit, int $limit = null): SelectQueryStep2
     {
         if ($limit === null) {
@@ -152,6 +166,9 @@ final class SelectQueryStep2 implements SQLableInterface
 
         $sql .= Collection::from($this->conditions, PHP_EOL . 'WHERE')
             ->join(' ');
+
+        $sql .= Collection::from($this->groupBys, PHP_EOL . 'GROUP BY')
+            ->join();
 
         $sql .= Collection::from($this->orderBys, PHP_EOL . 'ORDER BY')
             ->join();
