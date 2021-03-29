@@ -43,7 +43,7 @@ final class UpdateQueryStep2 implements SQLableInterface
         array $columns,
         array $values,
         ConditionInterface $condition
-    ): static
+    ): UpdateQueryStep2
     {
         $object = new static;
         $object->kuery = $kuery;
@@ -56,9 +56,27 @@ final class UpdateQueryStep2 implements SQLableInterface
         return $object;
     }
 
-    public function where(ConditionInterface $condition): self
+    public function where(ConditionInterface $condition): UpdateQueryStep2
     {
-        $this->conditions[] = $condition;
+        if (empty($this->conditions)) {
+            $this->conditions[] = $condition;
+        } else {
+            $this->conditions[] = $condition->asAnd();
+        }
+
+        return $this;
+    }
+
+    public function andWhere(ConditionInterface $condition): UpdateQueryStep2
+    {
+        $this->conditions[] = $condition->asAnd();
+
+        return $this;
+    }
+
+    public function orWhere(ConditionInterface $condition): UpdateQueryStep2
+    {
+        $this->conditions[] = $condition->asOr();
 
         return $this;
     }

@@ -34,7 +34,7 @@ final class DeleteQueryStep2
         Table $table,
         array $joins,
         ConditionInterface $condition
-    ): static
+    ): DeleteQueryStep2
     {
         $object = new static;
         $object->kuery = $kuery;
@@ -45,9 +45,27 @@ final class DeleteQueryStep2
         return $object;
     }
 
-    public function where(ConditionInterface $condition): self
+    public function where(ConditionInterface $condition): DeleteQueryStep2
     {
-        $this->conditions[] = $condition;
+        if (empty($this->conditions)) {
+            $this->conditions[] = $condition;
+        } else {
+            $this->conditions[] = $condition->asAnd();
+        }
+
+        return $this;
+    }
+
+    public function andWhere(ConditionInterface $condition): DeleteQueryStep2
+    {
+        $this->conditions[] = $condition->asAnd();
+
+        return $this;
+    }
+
+    public function orWhere(ConditionInterface $condition): DeleteQueryStep2
+    {
+        $this->conditions[] = $condition->asOr();
 
         return $this;
     }

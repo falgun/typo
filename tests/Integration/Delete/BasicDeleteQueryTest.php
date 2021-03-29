@@ -34,4 +34,30 @@ final class BasicDeleteQueryTest extends AbstractIntegrationTest
             $query->getBindValues()
         );
     }
+
+    public function testMultiConditionDeleteQuery()
+    {
+        $builder = $this->getBuilder();
+
+        $userMeta = UsersMeta::new();
+
+        $query = $builder
+            ->delete($userMeta->table())
+            ->where($userMeta->id()->eq(3))
+            ->orWhere($userMeta->id()->eq(5))
+            ->where($userMeta->username()->eq('Admin'));
+
+        $this->assertSame(
+            <<<SQL
+            DELETE FROM users
+            WHERE users.id = ? OR users.id = ? AND users.username = ?
+            SQL,
+            $query->getSQL()
+        );
+
+        $this->assertSame(
+            [3, 5, 'Admin'],
+            $query->getBindValues()
+        );
+    }
 }

@@ -41,4 +41,37 @@ final class BasicUpdateQueryTest extends AbstractIntegrationTest
             $query->getBindValues()
         );
     }
+
+    public function testMultiConditionUpdateQuery()
+    {
+        $builder = $this->getBuilder();
+
+        $userMeta = UsersMeta::new();
+
+        $query = $builder
+            ->update($userMeta->table())
+            ->set($userMeta->name(), '::new name::')
+            ->where($userMeta->id()->eq(2))
+            ->andWhere($userMeta->id()->eq(3))
+            ->orWhere($userMeta->username()->eq('Admin'));
+
+        $this->assertSame(
+            <<<SQL
+            UPDATE users
+            SET users.name = ?
+            WHERE users.id = ? AND users.id = ? OR users.username = ?
+            SQL,
+            $query->getSQL()
+        );
+
+        $this->assertSame(
+            [
+                '::new name::',
+                2,
+                3,
+                'Admin',
+            ],
+            $query->getBindValues()
+        );
+    }
 }
