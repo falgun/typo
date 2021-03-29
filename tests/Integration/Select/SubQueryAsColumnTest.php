@@ -23,7 +23,7 @@ final class SubQueryAsColumnTest extends AbstractIntegrationTest
                 (
                 $builder->select($postMeta->title())
                 ->from($postMeta->table())
-                ->where($postMeta->user_id()->eq($userMeta->id()))
+                ->where($postMeta->userId()->eq($userMeta->id()))
                 ->andWhere($postMeta->id()->eq(99))
                 ->as('post_title')
                 )

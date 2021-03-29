@@ -55,12 +55,12 @@ final class PostsMeta
         return Column::fromSchema($this->getNameOrAlias() . '.id');
     }
 
-    public function category_id(): Column
+    public function categoryId(): Column
     {
         return Column::fromSchema($this->getNameOrAlias() . '.category_id');
     }
 
-    public function user_id(): Column
+    public function userId(): Column
     {
         return Column::fromSchema($this->getNameOrAlias() . '.user_id');
     }

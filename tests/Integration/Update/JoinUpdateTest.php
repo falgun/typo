@@ -19,7 +19,7 @@ final class JoinUpdateTest extends AbstractIntegrationTest
 
         $query = $builder
             ->update($userMeta->table())
-            ->join($postMeta->table()->on($postMeta->user_id()->eq($userMeta->id())))
+            ->join($postMeta->table()->on($postMeta->userId()->eq($userMeta->id())))
             ->set($userMeta->name(), '::newName::')
             ->set($userMeta->username(), $postMeta->title())
             ->where($userMeta->id()->eq(50));

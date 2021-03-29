@@ -59,7 +59,7 @@ final class BasicSelectQueryTest extends AbstractIntegrationTest
                 $postMeta->title(),
             )
             ->from($userMeta->table())
-            ->join($postMeta->table()->on($postMeta->user_id()->eq($userMeta->id())))
+            ->join($postMeta->table()->on($postMeta->userId()->eq($userMeta->id())))
             ->orderBy($postMeta->id()->desc());
 
         $this->assertSame(

@@ -23,7 +23,7 @@ final class SubQueryAsConditionTest extends AbstractIntegrationTest
             ->where($userMeta->id()->eq(
                 $builder->select($postMeta->id())
                 ->from($postMeta->table())
-                ->where($postMeta->user_id()->eq(101))
+                ->where($postMeta->userId()->eq(101))
                 ->as(''))
         );
 

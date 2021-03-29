@@ -19,7 +19,7 @@ final class JoinDeleteQueryTest extends AbstractIntegrationTest
 
         $query = $builder
             ->delete($userMeta->table())
-            ->join($postMeta->table()->on($postMeta->user_id()->eq($userMeta->id())))
+            ->join($postMeta->table()->on($postMeta->userId()->eq($userMeta->id())))
             ->where($userMeta->id()->eq(50));
 
         $this->assertSame(

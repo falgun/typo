@@ -24,7 +24,7 @@ final class JoinQueryTest extends AbstractIntegrationTest
                 $postMeta->title(),
             )
             ->from($userMeta->table())
-            ->join($postMeta->table()->on($postMeta->user_id()->eq($userMeta->id())));
+            ->join($postMeta->table()->on($postMeta->userId()->eq($userMeta->id())));
 
         $this->assertSame(
             <<<SQL
@@ -54,7 +54,7 @@ final class JoinQueryTest extends AbstractIntegrationTest
                 $postMeta->title(),
             )
             ->from($userMeta->table())
-            ->innerJoin($postMeta->table()->on($postMeta->user_id()->eq($userMeta->id())));
+            ->innerJoin($postMeta->table()->on($postMeta->userId()->eq($userMeta->id())));
 
         $this->assertSame(
             <<<SQL
@@ -84,7 +84,7 @@ final class JoinQueryTest extends AbstractIntegrationTest
                 $postMeta->title(),
             )
             ->from($userMeta->table())
-            ->leftJoin($postMeta->table()->on($postMeta->user_id()->eq($userMeta->id())));
+            ->leftJoin($postMeta->table()->on($postMeta->userId()->eq($userMeta->id())));
 
         $this->assertSame(
             <<<SQL
