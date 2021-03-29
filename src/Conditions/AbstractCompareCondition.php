@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Falgun\Typo\Conditions;
 
+use Falgun\Typo\Query\Parts\Collection;
 use Falgun\Typo\Interfaces\SQLableInterface;
 use Falgun\Typo\Interfaces\SubQueryInterface;
 use Falgun\Typo\Interfaces\ConditionInterface;
@@ -25,6 +26,11 @@ abstract class AbstractCompareCondition implements ConditionInterface
      * @var mixed
      */
     private $sideB;
+
+    /**
+     * @var array<int, ConditionInterface>
+     */
+    private array $siblings = [];
 
     /**
      *
@@ -68,6 +74,20 @@ abstract class AbstractCompareCondition implements ConditionInterface
         return $orCondition;
     }
 
+    public function and(ConditionInterface $condition): ConditionInterface
+    {
+        $this->siblings[] = $condition->asAnd();
+
+        return $this;
+    }
+
+    public function or(ConditionInterface $condition): ConditionInterface
+    {
+        $this->siblings[] = $condition->asOr();
+
+        return $this;
+    }
+
     public final function getSQL(): string
     {
         if (is_object($this->sideB) && $this->sideB instanceof SQLableInterface) {
@@ -76,8 +96,14 @@ abstract class AbstractCompareCondition implements ConditionInterface
             $placeholderSQL = $this->prepareValuePlaceholder($this->sideB);
         }
 
-        return ($this->type ? ($this->type . ' ') : '') .
-            $this->getConditionSQL($this->sideA, $placeholderSQL);
+        $sql = ($this->type ? ($this->type . ' ') : '');
+
+        if ($this->siblings === []) {
+            return $sql . $this->getConditionSQL($this->sideA, $placeholderSQL);
+        }
+
+        return $sql . '(' . $this->getConditionSQL($this->sideA, $placeholderSQL) . ' ' .
+            Collection::from($this->siblings, '')->join(' ') . ')';
     }
 
     /**
@@ -102,7 +128,13 @@ abstract class AbstractCompareCondition implements ConditionInterface
             return [];
         }
 
-        return $this->prepareBindValues($this->sideB);
+        $binds = $this->prepareBindValues($this->sideB);
+
+        foreach ($this->siblings as $sibling) {
+            $binds = [...$binds, ...$sibling->getBindValues()];
+        }
+
+        return $binds;
     }
 
     /**

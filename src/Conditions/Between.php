@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Falgun\Typo\Conditions;
 
+use Falgun\Typo\Query\Parts\Collection;
 use Falgun\Typo\Interfaces\SQLableInterface;
 use Falgun\Typo\Interfaces\ConditionInterface;
 
@@ -30,6 +31,11 @@ class Between implements ConditionInterface
      * @var string|int|float
      */
     private $sideC;
+
+    /**
+     * @var array<int, ConditionInterface>
+     */
+    private array $siblings = [];
 
     /**
      *
@@ -76,14 +82,32 @@ class Between implements ConditionInterface
         return $orCondition;
     }
 
+    public function and(ConditionInterface $condition): ConditionInterface
+    {
+        $this->siblings[] = $condition->asAnd();
+
+        return $this;
+    }
+
+    public function or(ConditionInterface $condition): ConditionInterface
+    {
+        $this->siblings[] = $condition->asOr();
+
+        return $this;
+    }
+
     public final function getSQL(): string
     {
         $placeholderSQL = '? AND ?';
 
-        return '(' .
-            ($this->type ? ($this->type . ' ') : '') .
-            $this->getConditionSQL($this->sideA, $placeholderSQL) .
-            ')';
+        $sql = ($this->type ? ($this->type . ' ') : '') . '(';
+
+        if ($this->siblings === []) {
+            return $sql . $this->getConditionSQL($this->sideA, $placeholderSQL) . ')';
+        }
+
+        return $sql . '(' . $this->getConditionSQL($this->sideA, $placeholderSQL) . ') ' .
+            Collection::from($this->siblings, '')->join(' ') . ')';
     }
 
     protected function getConditionSQL(SQLableInterface $sideA, string $placeholderSQL): string
@@ -93,6 +117,12 @@ class Between implements ConditionInterface
 
     public final function getBindValues(): array
     {
-        return [$this->sideB, $this->sideC];
+        $binds = [$this->sideB, $this->sideC];
+
+        foreach ($this->siblings as $sibling) {
+            $binds = [...$binds, ...$sibling->getBindValues()];
+        }
+
+        return $binds;
     }
 }

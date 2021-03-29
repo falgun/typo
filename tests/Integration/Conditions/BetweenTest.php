@@ -19,19 +19,20 @@ final class BetweenTest extends AbstractIntegrationTest
             ->select($userMeta->id())
             ->from($userMeta->table())
             ->where($userMeta->id()->between(1, 99))
+            ->where($userMeta->id()->between(150, 200))
             ->orWhere($userMeta->id()->eq(500));
 
         $this->assertSame(
             <<<SQL
             SELECT users.id
             FROM users
-            WHERE (users.id BETWEEN ? AND ?) OR users.id = ?
+            WHERE (users.id BETWEEN ? AND ?) AND (users.id BETWEEN ? AND ?) OR users.id = ?
             SQL,
             $query->getSQL()
         );
 
         $this->assertSame(
-            [1, 99, 500],
+            [1, 99, 150, 200, 500],
             $query->getBindValues()
         );
     }
