@@ -5,6 +5,7 @@ namespace Falgun\Typo\Tests\Stubs\Metas;
 
 use Falgun\Typo\Query\Parts\Table;
 use Falgun\Typo\Query\Parts\Column;
+use Falgun\Typo\Query\Parts\Asterisk;
 
 final class PostsMeta
 {
@@ -42,6 +43,11 @@ final class PostsMeta
     private function getNameOrAlias(): string
     {
         return ($this->alias ? $this->alias : self::NAME);
+    }
+
+    public function asterisk(): Asterisk
+    {
+        return Asterisk::fromTable($this->getNameOrAlias());
     }
 
     public function id(): Column
