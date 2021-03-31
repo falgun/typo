@@ -39,4 +39,66 @@ final class NestedConditionTest extends AbstractIntegrationTest
             $query->getBindValues()
         );
     }
+
+    public function testNestedConditionsBracket()
+    {
+        $builder = $this->getBuilder();
+
+        $userMeta = UsersMeta::new();
+
+        $query = $builder
+            ->select($userMeta->id())
+            ->from($userMeta->table())
+            ->where($userMeta->id()->eq(1)
+            ->or($userMeta->id()->gt(50)
+                ->or($userMeta->username()->in(['Admin', 'Mod'])
+                    ->or($userMeta->id()->eq(0))))
+            ->and($userMeta->id()->gt(50))
+        );
+
+        $this->assertSame(
+            <<<SQL
+            SELECT users.id
+            FROM users
+            WHERE (users.id = ? OR (users.id > ? OR (users.username IN (?, ?) OR users.id = ?)) AND users.id > ?)
+            SQL,
+            $query->getSQL()
+        );
+
+        $this->assertSame(
+            [1, 50, 'Admin', 'Mod', 0, 50],
+            $query->getBindValues()
+        );
+    }
+
+    public function testNestedAndConditionsBracket()
+    {
+        $builder = $this->getBuilder();
+
+        $userMeta = UsersMeta::new();
+
+        $query = $builder
+            ->select($userMeta->id())
+            ->from($userMeta->table())
+            ->where($userMeta->id()->eq(1)
+            ->and($userMeta->id()->gt(50)
+                ->and($userMeta->username()->in(['Admin', 'Mod'])
+                    ->and($userMeta->id()->eq(0))))
+            ->and($userMeta->id()->gt(50))
+        );
+
+        $this->assertSame(
+            <<<SQL
+            SELECT users.id
+            FROM users
+            WHERE (users.id = ? AND (users.id > ? AND (users.username IN (?, ?) AND users.id = ?)) AND users.id > ?)
+            SQL,
+            $query->getSQL()
+        );
+
+        $this->assertSame(
+            [1, 50, 'Admin', 'Mod', 0, 50],
+            $query->getBindValues()
+        );
+    }
 }

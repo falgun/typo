@@ -3,22 +3,14 @@ declare(strict_types=1);
 
 namespace Falgun\Typo\Conditions;
 
-use Falgun\Typo\Query\Parts\Collection;
 use Falgun\Typo\Interfaces\SQLableInterface;
 use Falgun\Typo\Interfaces\SubQueryInterface;
 use Falgun\Typo\Interfaces\ConditionInterface;
+use Falgun\Typo\Query\Parts\Condition\ConditionGroup;
 
 abstract class AbstractCompareCondition implements ConditionInterface
 {
 
-    private const TYPE_DEFAULT = '';
-    private const TYPE_AND = 'AND';
-    private const TYPE_OR = 'OR';
-
-    /**
-     * @var self::TYPE_DEFAULT|self::TYPE_AND|self::TYPE_OR $type
-     */
-    private string $type;
     private SQLableInterface $sideA;
 
     /**
@@ -26,11 +18,7 @@ abstract class AbstractCompareCondition implements ConditionInterface
      * @var mixed
      */
     private $sideB;
-
-    /**
-     * @var array<int, ConditionInterface>
-     */
-    private array $siblings = [];
+    private ConditionGroup $siblings;
 
     /**
      *
@@ -39,9 +27,9 @@ abstract class AbstractCompareCondition implements ConditionInterface
      */
     private final function __construct(SQLableInterface $sideA, $sideB)
     {
-        $this->type = self::TYPE_DEFAULT;
         $this->sideA = $sideA;
         $this->sideB = $sideB;
+        $this->siblings = ConditionGroup::fromBlank();
     }
 
     /**
@@ -56,34 +44,16 @@ abstract class AbstractCompareCondition implements ConditionInterface
         return new static($sideA, $sideB);
     }
 
-    public final function asAnd(): ConditionInterface
-    {
-        $orCondition = clone $this;
-
-        $orCondition->type = self::TYPE_AND;
-
-        return $orCondition;
-    }
-
-    public final function asOr(): ConditionInterface
-    {
-        $orCondition = clone $this;
-
-        $orCondition->type = self::TYPE_OR;
-
-        return $orCondition;
-    }
-
     public function and(ConditionInterface $condition): ConditionInterface
     {
-        $this->siblings[] = $condition->asAnd();
+        $this->siblings->and($condition);
 
         return $this;
     }
 
     public function or(ConditionInterface $condition): ConditionInterface
     {
-        $this->siblings[] = $condition->asOr();
+        $this->siblings->or($condition);
 
         return $this;
     }
@@ -96,14 +66,14 @@ abstract class AbstractCompareCondition implements ConditionInterface
             $placeholderSQL = $this->prepareValuePlaceholder($this->sideB);
         }
 
-        $sql = ($this->type ? ($this->type . ' ') : '');
+        $sql = '';
 
-        if ($this->siblings === []) {
+        if ($this->siblings->hasConditions() === false) {
             return $sql . $this->getConditionSQL($this->sideA, $placeholderSQL);
         }
 
-        return $sql . '(' . $this->getConditionSQL($this->sideA, $placeholderSQL) . ' ' .
-            Collection::from($this->siblings, '')->join(' ') . ')';
+        return $sql . '(' . $this->getConditionSQL($this->sideA, $placeholderSQL) .
+            $this->siblings->getSQL() . ')';
     }
 
     /**
@@ -130,8 +100,8 @@ abstract class AbstractCompareCondition implements ConditionInterface
 
         $binds = $this->prepareBindValues($this->sideB);
 
-        foreach ($this->siblings as $sibling) {
-            $binds = [...$binds, ...$sibling->getBindValues()];
+        if ($this->siblings->hasConditions()) {
+            $binds = [...$binds, ...$this->siblings->getBindValues()];
         }
 
         return $binds;

@@ -77,11 +77,6 @@ final class InsertQueryStep1
         return trim($sql, ', ');
     }
 
-    private function getSqlFromColumnArray(): array
-    {
-        return array_map(fn(Column $column) => $column->getSQL(), $this->columns);
-    }
-
     public function getBindValues(): array
     {
         $bindables = [];

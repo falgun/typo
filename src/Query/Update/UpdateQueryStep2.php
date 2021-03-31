@@ -8,6 +8,7 @@ use Falgun\Typo\Query\Parts\Table;
 use Falgun\Typo\Query\Parts\Collection;
 use Falgun\Typo\Interfaces\SQLableInterface;
 use Falgun\Typo\Interfaces\ConditionInterface;
+use Falgun\Typo\Query\Parts\Condition\ConditionGroup;
 
 final class UpdateQueryStep2 implements SQLableInterface
 {
@@ -26,14 +27,12 @@ final class UpdateQueryStep2 implements SQLableInterface
 
     /** @psalm-suppress PropertyNotSetInConstructor */
     private array $updatableValues;
-
-    /** @psalm-suppress PropertyNotSetInConstructor */
-    private array $conditions;
+    private ConditionGroup $conditionGroup;
 
     /** @psalm-suppress PropertyNotSetInConstructor */
     private function __construct()
     {
-        
+        $this->conditionGroup = ConditionGroup::fromBlank();
     }
 
     public static function fromCondition(
@@ -51,32 +50,21 @@ final class UpdateQueryStep2 implements SQLableInterface
         $object->joins = $joins;
         $object->updatableColumns = $columns;
         $object->updatableValues = $values;
-        $object->conditions[] = $condition;
+        $object->conditionGroup = ConditionGroup::fromFirstCondition($condition);
 
         return $object;
     }
 
-    public function where(ConditionInterface $condition): UpdateQueryStep2
-    {
-        if (empty($this->conditions)) {
-            $this->conditions[] = $condition;
-        } else {
-            $this->conditions[] = $condition->asAnd();
-        }
-
-        return $this;
-    }
-
     public function andWhere(ConditionInterface $condition): UpdateQueryStep2
     {
-        $this->conditions[] = $condition->asAnd();
+        $this->conditionGroup->and($condition);
 
         return $this;
     }
 
     public function orWhere(ConditionInterface $condition): UpdateQueryStep2
     {
-        $this->conditions[] = $condition->asOr();
+        $this->conditionGroup->or($condition);
 
         return $this;
     }
@@ -107,8 +95,7 @@ final class UpdateQueryStep2 implements SQLableInterface
 
         $sql .= 'SET ' . implode(', ', $parts);
 
-        $sql .= Collection::from($this->conditions, PHP_EOL . 'WHERE')
-            ->join(' ');
+        $sql .= $this->conditionGroup->getSQL();
 
         return $sql;
     }
@@ -117,9 +104,7 @@ final class UpdateQueryStep2 implements SQLableInterface
     {
         $binds = array_filter($this->updatableValues, fn($value) => !($value instanceof SQLableInterface));
 
-        foreach ($this->conditions as $condition) {
-            $binds = array_merge($binds, $condition->getBindValues());
-        }
+        $binds = [...$binds, ...$this->conditionGroup->getBindValues()];
 
         return $binds;
     }

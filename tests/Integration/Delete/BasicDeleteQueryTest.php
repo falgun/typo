@@ -45,7 +45,7 @@ final class BasicDeleteQueryTest extends AbstractIntegrationTest
             ->delete($userMeta->table())
             ->where($userMeta->id()->eq(3))
             ->orWhere($userMeta->id()->eq(5))
-            ->where($userMeta->username()->eq('Admin'));
+            ->andWhere($userMeta->username()->eq('Admin'));
 
         $this->assertSame(
             <<<SQL

@@ -6,18 +6,11 @@ namespace Falgun\Typo\Conditions;
 use Falgun\Typo\Query\Parts\Collection;
 use Falgun\Typo\Interfaces\SQLableInterface;
 use Falgun\Typo\Interfaces\ConditionInterface;
+use Falgun\Typo\Query\Parts\Condition\ConditionGroup;
 
 class Between implements ConditionInterface
 {
 
-    private const TYPE_DEFAULT = '';
-    private const TYPE_AND = 'AND';
-    private const TYPE_OR = 'OR';
-
-    /**
-     * @var self::TYPE_DEFAULT|self::TYPE_AND|self::TYPE_OR $type
-     */
-    private string $type;
     private SQLableInterface $sideA;
 
     /**
@@ -31,11 +24,7 @@ class Between implements ConditionInterface
      * @var string|int|float
      */
     private $sideC;
-
-    /**
-     * @var array<int, ConditionInterface>
-     */
-    private array $siblings = [];
+    private ConditionGroup $siblings;
 
     /**
      *
@@ -45,10 +34,10 @@ class Between implements ConditionInterface
      */
     private final function __construct(SQLableInterface $sideA, $sideB, $sideC)
     {
-        $this->type = self::TYPE_DEFAULT;
         $this->sideA = $sideA;
         $this->sideB = $sideB;
         $this->sideC = $sideC;
+        $this->siblings = ConditionGroup::fromBlank();
     }
 
     /**
@@ -64,34 +53,16 @@ class Between implements ConditionInterface
         return new static($sideA, $sideB, $sideC);
     }
 
-    public final function asAnd(): ConditionInterface
-    {
-        $orCondition = clone $this;
-
-        $orCondition->type = self::TYPE_AND;
-
-        return $orCondition;
-    }
-
-    public final function asOr(): ConditionInterface
-    {
-        $orCondition = clone $this;
-
-        $orCondition->type = self::TYPE_OR;
-
-        return $orCondition;
-    }
-
     public function and(ConditionInterface $condition): ConditionInterface
     {
-        $this->siblings[] = $condition->asAnd();
+        $this->siblings->and($condition);
 
         return $this;
     }
 
     public function or(ConditionInterface $condition): ConditionInterface
     {
-        $this->siblings[] = $condition->asOr();
+        $this->siblings->or($condition);
 
         return $this;
     }
@@ -100,14 +71,14 @@ class Between implements ConditionInterface
     {
         $placeholderSQL = '? AND ?';
 
-        $sql = ($this->type ? ($this->type . ' ') : '') . '(';
+        $sql = '(';
 
-        if ($this->siblings === []) {
+        if ($this->siblings->hasConditions() === false) {
             return $sql . $this->getConditionSQL($this->sideA, $placeholderSQL) . ')';
         }
 
-        return $sql . '(' . $this->getConditionSQL($this->sideA, $placeholderSQL) . ') ' .
-            Collection::from($this->siblings, '')->join(' ') . ')';
+        return $sql . '(' . $this->getConditionSQL($this->sideA, $placeholderSQL) . ')' .
+            $this->siblings->getSQL() . ')';
     }
 
     protected function getConditionSQL(SQLableInterface $sideA, string $placeholderSQL): string
@@ -119,8 +90,8 @@ class Between implements ConditionInterface
     {
         $binds = [$this->sideB, $this->sideC];
 
-        foreach ($this->siblings as $sibling) {
-            $binds = [...$binds, ...$sibling->getBindValues()];
+        if ($this->siblings->hasConditions()) {
+            $binds = [...$binds, ...$this->siblings->getBindValues()];
         }
 
         return $binds;

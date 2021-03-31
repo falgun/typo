@@ -12,6 +12,7 @@ use Falgun\Typo\Interfaces\SQLableInterface;
 use Falgun\Typo\Interfaces\ConditionInterface;
 use Falgun\Typo\Interfaces\TableLikeInterface;
 use Falgun\Typo\Interfaces\ColumnLikeInterface;
+use Falgun\Typo\Query\Parts\Condition\ConditionGroup;
 
 final class SelectQueryStep2 implements SQLableInterface
 {
@@ -27,9 +28,7 @@ final class SelectQueryStep2 implements SQLableInterface
 
     /** @psalm-suppress PropertyNotSetInConstructor */
     private array $joins = [];
-
-    /** @psalm-suppress PropertyNotSetInConstructor */
-    private array $conditions = [];
+    private ConditionGroup $conditionGroup;
 
     /**
      * @var array<int, OrderByInterface>
@@ -52,7 +51,7 @@ final class SelectQueryStep2 implements SQLableInterface
     /** @psalm-suppress PropertyNotSetInConstructor */
     private function __construct()
     {
-        
+        $this->conditionGroup = ConditionGroup::fromBlank();
     }
 
     public static function fromTable(Kuery $kuery, array $columns, TableLikeInterface $table): static
@@ -88,25 +87,22 @@ final class SelectQueryStep2 implements SQLableInterface
 
     public function where(ConditionInterface $condition): SelectQueryStep2
     {
-        if (empty($this->conditions)) {
-            $this->conditions[] = $condition;
-        } else {
-            $this->conditions[] = $condition->asAnd();
-        }
+        // intentionally making where() required before andWhere(), orWhere()
+        $this->conditionGroup = ConditionGroup::fromFirstCondition($condition);
 
         return $this;
     }
 
     public function andWhere(ConditionInterface $condition): SelectQueryStep2
     {
-        $this->conditions[] = $condition->asAnd();
+        $this->conditionGroup->and($condition);
 
         return $this;
     }
 
     public function orWhere(ConditionInterface $condition): SelectQueryStep2
     {
-        $this->conditions[] = $condition->asOr();
+        $this->conditionGroup->or($condition);
 
         return $this;
     }
@@ -164,8 +160,7 @@ final class SelectQueryStep2 implements SQLableInterface
             $sql .= PHP_EOL . $join->getSQL();
         }
 
-        $sql .= Collection::from($this->conditions, PHP_EOL . 'WHERE')
-            ->join(' ');
+        $sql .= $this->conditionGroup->getSQL();
 
         $sql .= Collection::from($this->groupBys, PHP_EOL . 'GROUP BY')
             ->join();
@@ -192,9 +187,7 @@ final class SelectQueryStep2 implements SQLableInterface
 
         $binds = array_merge($binds, $this->table->getBindValues());
 
-        foreach ($this->conditions as $condition) {
-            $binds = array_merge($binds, $condition->getBindValues());
-        }
+        $binds = [...$binds, ...$this->conditionGroup->getBindValues()];
 
         return $binds;
     }

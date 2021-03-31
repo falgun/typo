@@ -5,8 +5,8 @@ namespace Falgun\Typo\Query\Delete;
 
 use Falgun\Kuery\Kuery;
 use Falgun\Typo\Query\Parts\Table;
-use Falgun\Typo\Query\Parts\Collection;
 use Falgun\Typo\Interfaces\ConditionInterface;
+use Falgun\Typo\Query\Parts\Condition\ConditionGroup;
 
 final class DeleteQueryStep2
 {
@@ -19,14 +19,12 @@ final class DeleteQueryStep2
 
     /** @psalm-suppress PropertyNotSetInConstructor */
     private array $joins;
-
-    /** @psalm-suppress PropertyNotSetInConstructor */
-    private array $conditions;
+    private ConditionGroup $conditionGroup;
 
     /** @psalm-suppress PropertyNotSetInConstructor */
     private function __construct()
     {
-        
+        $this->conditionGroup = ConditionGroup::fromBlank();
     }
 
     public static function fromCondition(
@@ -40,32 +38,21 @@ final class DeleteQueryStep2
         $object->kuery = $kuery;
         $object->table = $table;
         $object->joins = $joins;
-        $object->conditions[] = $condition;
+        $object->conditionGroup = ConditionGroup::fromFirstCondition($condition);
 
         return $object;
     }
 
-    public function where(ConditionInterface $condition): DeleteQueryStep2
-    {
-        if (empty($this->conditions)) {
-            $this->conditions[] = $condition;
-        } else {
-            $this->conditions[] = $condition->asAnd();
-        }
-
-        return $this;
-    }
-
     public function andWhere(ConditionInterface $condition): DeleteQueryStep2
     {
-        $this->conditions[] = $condition->asAnd();
+        $this->conditionGroup->and($condition);
 
         return $this;
     }
 
     public function orWhere(ConditionInterface $condition): DeleteQueryStep2
     {
-        $this->conditions[] = $condition->asOr();
+        $this->conditionGroup->or($condition);
 
         return $this;
     }
@@ -85,8 +72,7 @@ final class DeleteQueryStep2
             $sql .= PHP_EOL . $join->getSQL();
         }
 
-        $sql .= Collection::from($this->conditions, PHP_EOL . 'WHERE')
-            ->join(' ');
+        $sql .= $this->conditionGroup->getSQL();
 
         return $sql;
     }
@@ -95,9 +81,7 @@ final class DeleteQueryStep2
     {
         $binds = [];
 
-        foreach ($this->conditions as $condition) {
-            $binds = array_merge($binds, $condition->getBindValues());
-        }
+        $binds = [...$binds, ...$this->conditionGroup->getBindValues()];
 
         return $binds;
     }
