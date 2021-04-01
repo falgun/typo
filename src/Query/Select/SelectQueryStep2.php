@@ -185,6 +185,10 @@ final class SelectQueryStep2 implements SQLableInterface
             $binds = array_merge($binds, $column->getBindValues());
         }
 
+        foreach ($this->joins as $join) {
+            $binds = [...$binds, ...$join->getBindValues()];
+        }
+
         $binds = array_merge($binds, $this->table->getBindValues());
 
         $binds = [...$binds, ...$this->conditionGroup->getBindValues()];

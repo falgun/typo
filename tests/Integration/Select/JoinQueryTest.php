@@ -160,4 +160,72 @@ final class JoinQueryTest extends AbstractIntegrationTest
             $query->getBindValues()
         );
     }
+
+    public function testJoinWithMultipleCondition()
+    {
+        $builder = $this->getBuilder();
+
+        $userMeta = UsersMeta::new();
+        $postMeta = PostsMeta::new();
+
+        $query = $builder
+            ->select(
+                $userMeta->id(),
+                $postMeta->title(),
+            )
+            ->from($userMeta->table())
+            ->join(
+            $postMeta->table()->on(
+                $postMeta->userId()->eq($userMeta->id())
+                ->and($postMeta->id()->eq(1)
+                    ->or($postMeta->id()->between(11, 15)))
+            )
+        );
+
+        $this->assertSame(
+            <<<SQL
+            SELECT users.id, posts.title
+            FROM users
+            JOIN posts ON (posts.user_id = users.id AND (posts.id = ? OR (posts.id BETWEEN ? AND ?)))
+            SQL,
+            $query->getSQL()
+        );
+
+        $this->assertSame(
+            [1, 11, 15],
+            $query->getBindValues()
+        );
+    }
+
+    public function testJoinedColumnInCondition()
+    {
+        $builder = $this->getBuilder();
+
+        $userMeta = UsersMeta::new();
+        $postMeta = PostsMeta::new();
+
+        $query = $builder
+            ->select(
+                $userMeta->id(),
+                $postMeta->title(),
+            )
+            ->from($userMeta->table())
+            ->join($postMeta->table()->on($postMeta->userId()->eq($userMeta->id())))
+            ->where($userMeta->name()->eq($postMeta->title()));
+
+        $this->assertSame(
+            <<<SQL
+            SELECT users.id, posts.title
+            FROM users
+            JOIN posts ON posts.user_id = users.id
+            WHERE users.name = posts.title
+            SQL,
+            $query->getSQL()
+        );
+
+        $this->assertSame(
+            [],
+            $query->getBindValues()
+        );
+    }
 }

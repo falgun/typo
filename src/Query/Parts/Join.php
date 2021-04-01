@@ -86,6 +86,10 @@ final class Join implements JoinInterface
 
     public function getBindValues(): array
     {
+        if (isset($this->condition)) {
+            return $this->condition->getBindValues();
+        }
+
         return [];
     }
 }

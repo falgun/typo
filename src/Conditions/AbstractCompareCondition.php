@@ -92,13 +92,14 @@ abstract class AbstractCompareCondition implements ConditionInterface
     {
         if (is_object($this->sideB) && $this->sideB instanceof SubQueryInterface) {
             // subquery
-            return $this->sideB->getBindValues();
+            $binds = $this->sideB->getBindValues();
         } elseif (is_object($this->sideB) && $this->sideB instanceof SQLableInterface) {
             // column
-            return [];
+            $binds = [];
+        } else {
+            // user provided scaler input
+            $binds = $this->prepareBindValues($this->sideB);
         }
-
-        $binds = $this->prepareBindValues($this->sideB);
 
         if ($this->siblings->hasConditions()) {
             $binds = [...$binds, ...$this->siblings->getBindValues()];

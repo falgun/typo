@@ -81,6 +81,10 @@ final class DeleteQueryStep2
     {
         $binds = [];
 
+        foreach ($this->joins as $join) {
+            $binds = [...$binds, ...$join->getBindValues()];
+        }
+
         $binds = [...$binds, ...$this->conditionGroup->getBindValues()];
 
         return $binds;
