@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Falgun\Typo\Conditions;
 
-use Falgun\Typo\Query\Parts\Collection;
 use Falgun\Typo\Interfaces\SQLableInterface;
 use Falgun\Typo\Interfaces\ConditionInterface;
+use Falgun\Typo\Interfaces\ColumnLikeInterface;
 use Falgun\Typo\Query\Parts\Condition\ConditionGroup;
 
 class Between implements ConditionInterface
@@ -15,13 +15,13 @@ class Between implements ConditionInterface
 
     /**
      *
-     * @var string|int|float
+     * @var string|int|float|ColumnLikeInterface
      */
     private $sideB;
 
     /**
      *
-     * @var string|int|float
+     * @var string|int|float|ColumnLikeInterface
      */
     private $sideC;
     private ConditionGroup $siblings;
@@ -29,8 +29,8 @@ class Between implements ConditionInterface
     /**
      *
      * @param SQLableInterface $sideA
-     * @param string|int|float $sideB
-     * @param string|int|float $sideC
+     * @param string|int|float|ColumnLikeInterface $sideB
+     * @param string|int|float|ColumnLikeInterface $sideC
      */
     private final function __construct(SQLableInterface $sideA, $sideB, $sideC)
     {
@@ -43,12 +43,16 @@ class Between implements ConditionInterface
     /**
      *
      * @param SQLableInterface $sideA
-     * @param string|int|float $sideB
-     * @param string|int|float $sideC
+     * @param string|int|float|ColumnLikeInterface $sideB
+     * @param string|int|float|ColumnLikeInterface $sideC
      *
      * @return static
      */
-    public final static function fromSides(SQLableInterface $sideA, string|int|float $sideB, string|int|float $sideC): static
+    public final static function fromSides(
+        SQLableInterface $sideA,
+        string|int|float|ColumnLikeInterface $sideB,
+        string|int|float|ColumnLikeInterface $sideC,
+    ): static
     {
         return new static($sideA, $sideB, $sideC);
     }
@@ -69,7 +73,21 @@ class Between implements ConditionInterface
 
     public final function getSQL(): string
     {
-        $placeholderSQL = '? AND ?';
+        $placeholderSQL = '';
+
+        if (is_object($this->sideB)) {
+            $placeholderSQL .= $this->sideB->getSQL();
+        } else {
+            $placeholderSQL .= '?';
+        }
+
+        $placeholderSQL .= ' AND ';
+
+        if (is_object($this->sideC)) {
+            $placeholderSQL .= $this->sideC->getSQL();
+        } else {
+            $placeholderSQL .= '?';
+        }
 
         $sql = '(';
 
@@ -88,7 +106,19 @@ class Between implements ConditionInterface
 
     public final function getBindValues(): array
     {
-        $binds = [$this->sideB, $this->sideC];
+        $binds = [];
+
+        if (is_object($this->sideB)) {
+            $binds = [...$binds, ...$this->sideB->getBindValues()];
+        } else {
+            $binds[] = $this->sideB;
+        }
+
+        if (is_object($this->sideC)) {
+            $binds = [...$binds, ...$this->sideC->getBindValues()];
+        } else {
+            $binds[] = $this->sideC;
+        }
 
         if ($this->siblings->hasConditions()) {
             $binds = [...$binds, ...$this->siblings->getBindValues()];

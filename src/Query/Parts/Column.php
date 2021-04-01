@@ -167,23 +167,29 @@ final class Column implements ColumnLikeInterface
     }
 
     /**
-     * @param string|int|float $valueA
-     * @param string|int|float $valueB
+     * @param string|int|float|ColumnLikeInterface $valueA
+     * @param string|int|float|ColumnLikeInterface $valueB
      *
      * @return ConditionInterface
      */
-    public function between(string|int|float $valueA, string|int|float $valueB): ConditionInterface
+    public function between(
+        string|int|float|ColumnLikeInterface $valueA,
+        string|int|float|ColumnLikeInterface $valueB,
+    ): ConditionInterface
     {
         return Between::fromSides($this, $valueA, $valueB);
     }
 
     /**
-     * @param string|int|float $valueA
-     * @param string|int|float $valueB
+     * @param string|int|float|ColumnLikeInterface $valueA
+     * @param string|int|float|ColumnLikeInterface $valueB
      *
      * @return ConditionInterface
      */
-    public function notBetween(string|int|float $valueA, string|int|float $valueB): ConditionInterface
+    public function notBetween(
+        string|int|float|ColumnLikeInterface $valueA,
+        string|int|float|ColumnLikeInterface $valueB,
+    ): ConditionInterface
     {
         return NotBetween::fromSides($this, $valueA, $valueB);
     }
