@@ -34,7 +34,7 @@ final class UsersMeta
         $table = Table::fromName(self::NAME);
 
         if ($this->alias !== '') {
-            $table->as($this->alias);
+            return $table->as($this->alias);
         }
 
         return $table;

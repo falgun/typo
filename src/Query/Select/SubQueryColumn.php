@@ -26,9 +26,11 @@ final class SubQueryColumn implements ColumnLikeInterface, SubQueryInterface
 
     public function as(string $alias): ColumnLikeInterface
     {
-        $this->alias = $alias;
+        $subQuery = clone $this;
 
-        return $this;
+        $subQuery->alias = $alias;
+
+        return $subQuery;
     }
 
     public function getSQL(): string

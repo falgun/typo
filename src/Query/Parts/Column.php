@@ -67,9 +67,11 @@ final class Column implements ColumnLikeInterface
 
     public function as(string $alias): ColumnLikeInterface
     {
-        $this->alias = $alias;
+        $column = clone $this;
 
-        return $this;
+        $column->alias = $alias;
+
+        return $column;
     }
 
     public function getSQL(): string

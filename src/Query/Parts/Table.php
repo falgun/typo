@@ -27,9 +27,11 @@ final class Table implements TableLikeInterface
 
     public function as(string $alias): TableLikeInterface
     {
-        $this->alias = $alias;
+        $table = clone $this;
 
-        return $this;
+        $table->alias = $alias;
+
+        return $table;
     }
 
     public function on(ConditionInterface $condition): JoinInterface

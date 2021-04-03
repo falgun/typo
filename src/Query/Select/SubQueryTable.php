@@ -26,9 +26,11 @@ final class SubQueryTable implements TableLikeInterface, SubQueryInterface
 
     public function as(string $alias): TableLikeInterface
     {
-        $this->alias = $alias;
+        $subQuery = clone $this;
 
-        return $this;
+        $subQuery->alias = $alias;
+
+        return $subQuery;
     }
 
     public function getSQL(): string
