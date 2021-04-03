@@ -133,16 +133,16 @@ final class BetweenTest extends AbstractIntegrationTest
             WHERE (users.id BETWEEN (SELECT posts.id
             FROM posts
             ORDER BY posts.id ASC
-            LIMIT 1) AND (SELECT posts.id
+            LIMIT ?) AND (SELECT posts.id
             FROM posts
             ORDER BY posts.id DESC
-            LIMIT 1))
+            LIMIT ?))
             SQL,
             $query->getSQL()
         );
 
         $this->assertSame(
-            [],
+            [1, 1],
             $query->getBindValues()
         );
     }

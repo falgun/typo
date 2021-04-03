@@ -33,13 +33,13 @@ final class BasicSelectQueryTest extends AbstractIntegrationTest
             FROM users
             WHERE users.id = ?
             ORDER BY users.id ASC
-            LIMIT 0, 100
+            LIMIT ?, ?
             SQL,
             $query->getSQL()
         );
 
         $this->assertSame(
-            [1],
+            [1, 0, 100],
             $query->getBindValues()
         );
     }

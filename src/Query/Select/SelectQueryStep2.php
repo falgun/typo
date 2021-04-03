@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Falgun\Typo\Query\Select;
 
 use Falgun\Kuery\Kuery;
+use Falgun\Typo\Query\Parts\Limit;
 use Falgun\Typo\Query\Parts\Column;
 use Falgun\Typo\Query\Parts\Collection;
 use Falgun\Typo\Interfaces\JoinInterface;
@@ -43,15 +44,13 @@ final class SelectQueryStep2 implements SQLableInterface
     private array $groupBys = [];
 
     /** @psalm-suppress PropertyNotSetInConstructor */
-    private int $offset;
-
-    /** @psalm-suppress PropertyNotSetInConstructor */
-    private int $limit;
+    private Limit $limit;
 
     /** @psalm-suppress PropertyNotSetInConstructor */
     private function __construct()
     {
         $this->conditionGroup = ConditionGroup::fromBlank();
+        $this->limit = Limit::fromBlank();
     }
 
     public static function fromTable(Kuery $kuery, array $columns, TableLikeInterface $table): static
@@ -124,11 +123,14 @@ final class SelectQueryStep2 implements SQLableInterface
     public function limit(int $offsetOrLimit, int $limit = null): SelectQueryStep2
     {
         if ($limit === null) {
-            $this->limit = $offsetOrLimit;
+            $offset = null;
+            $limit = $offsetOrLimit;
         } else {
-            $this->offset = $offsetOrLimit;
-            $this->limit = $limit;
+            $offset = $offsetOrLimit;
+            $limit = $limit;
         }
+
+        $this->limit = Limit::fromOffsetLimit($offset, $limit);
 
         return $this;
     }
@@ -168,11 +170,7 @@ final class SelectQueryStep2 implements SQLableInterface
         $sql .= Collection::from($this->orderBys, PHP_EOL . 'ORDER BY')
             ->join();
 
-        if (isset($this->offset) && isset($this->limit)) {
-            $sql .= PHP_EOL . 'LIMIT ' . $this->offset . ', ' . $this->limit;
-        } elseif (isset($this->limit)) {
-            $sql .= PHP_EOL . 'LIMIT ' . $this->limit;
-        }
+        $sql .= $this->limit->getSQL();
 
         return $sql;
     }
@@ -192,6 +190,8 @@ final class SelectQueryStep2 implements SQLableInterface
         $binds = array_merge($binds, $this->table->getBindValues());
 
         $binds = [...$binds, ...$this->conditionGroup->getBindValues()];
+
+        $binds = [...$binds, ...$this->limit->getBindValues()];
 
         return $binds;
     }

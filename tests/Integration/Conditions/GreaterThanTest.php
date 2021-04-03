@@ -36,13 +36,13 @@ final class GreaterThanTest extends AbstractIntegrationTest
             WHERE users.id > ? OR users.id > (SELECT posts.id
             FROM posts
             ORDER BY posts.id ASC
-            LIMIT 1)
+            LIMIT ?)
             SQL,
             $query->getSQL()
         );
 
         $this->assertSame(
-            [75],
+            [75, 1],
             $query->getBindValues()
         );
     }
