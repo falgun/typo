@@ -60,4 +60,30 @@ final class BasicDeleteQueryTest extends AbstractIntegrationTest
             $query->getBindValues()
         );
     }
+
+    public function testDeleteQueryWithOrderBy()
+    {
+        $builder = $this->getBuilder();
+
+        $userMeta = UsersMeta::new();
+
+        $query = $builder
+            ->delete($userMeta->table())
+            ->where($userMeta->id()->eq(3))
+            ->orderBy($userMeta->id()->desc());
+
+        $this->assertSame(
+            <<<SQL
+            DELETE FROM users
+            WHERE users.id = ?
+            ORDER BY users.id DESC
+            SQL,
+            $query->getSQL()
+        );
+
+        $this->assertSame(
+            [3],
+            $query->getBindValues()
+        );
+    }
 }

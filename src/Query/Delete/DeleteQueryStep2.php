@@ -5,6 +5,8 @@ namespace Falgun\Typo\Query\Delete;
 
 use Falgun\Kuery\Kuery;
 use Falgun\Typo\Query\Parts\Table;
+use Falgun\Typo\Query\Parts\Collection;
+use Falgun\Typo\Interfaces\OrderByInterface;
 use Falgun\Typo\Interfaces\ConditionInterface;
 use Falgun\Typo\Query\Parts\Condition\ConditionGroup;
 
@@ -20,6 +22,12 @@ final class DeleteQueryStep2
     /** @psalm-suppress PropertyNotSetInConstructor */
     private array $joins;
     private ConditionGroup $conditionGroup;
+
+    /**
+     * @var array<int, OrderByInterface>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
+    private array $orderBys = [];
 
     /** @psalm-suppress PropertyNotSetInConstructor */
     private function __construct()
@@ -57,6 +65,13 @@ final class DeleteQueryStep2
         return $this;
     }
 
+    public function orderBy(OrderByInterface $orderBy, OrderByInterface ...$orderBys): DeleteQueryStep2
+    {
+        $this->orderBys = [...$this->orderBys, $orderBy, ...$orderBys];
+
+        return $this;
+    }
+
     public function execute(): int
     {
         $stmt = $this->kuery->run($this->getSQL(), $this->getBindValues());
@@ -73,6 +88,9 @@ final class DeleteQueryStep2
         }
 
         $sql .= $this->conditionGroup->getSQL();
+
+        $sql .= Collection::from($this->orderBys, PHP_EOL . 'ORDER BY')
+            ->join();
 
         return $sql;
     }
