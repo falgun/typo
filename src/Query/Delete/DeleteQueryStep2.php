@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Falgun\Typo\Query\Delete;
 
 use Falgun\Kuery\Kuery;
+use Falgun\Typo\Query\Parts\Limit;
 use Falgun\Typo\Query\Parts\Table;
 use Falgun\Typo\Query\Parts\Collection;
 use Falgun\Typo\Interfaces\OrderByInterface;
@@ -30,9 +31,13 @@ final class DeleteQueryStep2
     private array $orderBys = [];
 
     /** @psalm-suppress PropertyNotSetInConstructor */
+    private Limit $limit;
+
+    /** @psalm-suppress PropertyNotSetInConstructor */
     private function __construct()
     {
         $this->conditionGroup = ConditionGroup::fromBlank();
+        $this->limit = Limit::fromBlank();
     }
 
     public static function fromCondition(
@@ -72,6 +77,13 @@ final class DeleteQueryStep2
         return $this;
     }
 
+    public function limit(int $offsetOrLimit, ?int $limit = null): DeleteQueryStep2
+    {
+        $this->limit = Limit::fromOffsetLimit($offsetOrLimit, $limit);
+
+        return $this;
+    }
+
     public function execute(): int
     {
         $stmt = $this->kuery->run($this->getSQL(), $this->getBindValues());
@@ -92,6 +104,8 @@ final class DeleteQueryStep2
         $sql .= Collection::from($this->orderBys, PHP_EOL . 'ORDER BY')
             ->join();
 
+        $sql .= $this->limit->getSQL();
+
         return $sql;
     }
 
@@ -104,6 +118,8 @@ final class DeleteQueryStep2
         }
 
         $binds = [...$binds, ...$this->conditionGroup->getBindValues()];
+
+        $binds = [...$binds, ...$this->limit->getBindValues()];
 
         return $binds;
     }

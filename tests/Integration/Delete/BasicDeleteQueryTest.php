@@ -86,4 +86,60 @@ final class BasicDeleteQueryTest extends AbstractIntegrationTest
             $query->getBindValues()
         );
     }
+
+    public function testDeleteQueryWithOffsetLimit()
+    {
+        $builder = $this->getBuilder();
+
+        $userMeta = UsersMeta::new();
+
+        $query = $builder
+            ->delete($userMeta->table())
+            ->where($userMeta->id()->eq(3))
+            ->orderBy($userMeta->id()->desc())
+            ->limit(0, 100);
+
+        $this->assertSame(
+            <<<SQL
+            DELETE FROM users
+            WHERE users.id = ?
+            ORDER BY users.id DESC
+            LIMIT ?, ?
+            SQL,
+            $query->getSQL()
+        );
+
+        $this->assertSame(
+            [3, 0, 100],
+            $query->getBindValues()
+        );
+    }
+
+    public function testDeleteQueryWithOnlyLimit()
+    {
+        $builder = $this->getBuilder();
+
+        $userMeta = UsersMeta::new();
+
+        $query = $builder
+            ->delete($userMeta->table())
+            ->where($userMeta->id()->eq(3))
+            ->orderBy($userMeta->id()->desc())
+            ->limit(50);
+
+        $this->assertSame(
+            <<<SQL
+            DELETE FROM users
+            WHERE users.id = ?
+            ORDER BY users.id DESC
+            LIMIT ?
+            SQL,
+            $query->getSQL()
+        );
+
+        $this->assertSame(
+            [3, 50],
+            $query->getBindValues()
+        );
+    }
 }
