@@ -120,17 +120,9 @@ final class SelectQueryStep2 implements SQLableInterface
         return $this;
     }
 
-    public function limit(int $offsetOrLimit, int $limit = null): SelectQueryStep2
+    public function limit(int $offsetOrLimit, ?int $limit = null): SelectQueryStep2
     {
-        if ($limit === null) {
-            $offset = null;
-            $limit = $offsetOrLimit;
-        } else {
-            $offset = $offsetOrLimit;
-            $limit = $limit;
-        }
-
-        $this->limit = Limit::fromOffsetLimit($offset, $limit);
+        $this->limit = Limit::fromOffsetLimit($offsetOrLimit, $limit);
 
         return $this;
     }

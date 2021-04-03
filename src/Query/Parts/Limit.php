@@ -17,8 +17,16 @@ final class Limit implements SQLableInterface
         $this->limit = $limit;
     }
 
-    public static function fromOffsetLimit(?int $offset, ?int $limit): Limit
+    public static function fromOffsetLimit(int $offsetOrLimit, ?int $limit): Limit
     {
+        if ($limit === null) {
+            $offset = null;
+            $limit = $offsetOrLimit;
+        } else {
+            $offset = $offsetOrLimit;
+            $limit = $limit;
+        }
+
         return new static($offset, $limit);
     }
 
