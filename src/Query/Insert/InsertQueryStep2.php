@@ -7,7 +7,7 @@ use Falgun\Kuery\Kuery;
 use Falgun\Typo\Query\Parts\Table;
 use Falgun\Typo\Query\Parts\Column;
 
-final class InsertQueryStep1
+final class InsertQueryStep2
 {
 
     /** @psalm-suppress PropertyNotSetInConstructor */
@@ -20,17 +20,26 @@ final class InsertQueryStep1
     private array $columns;
 
     /** @psalm-suppress PropertyNotSetInConstructor */
+    private array $valueSet;
+
+    /** @psalm-suppress PropertyNotSetInConstructor */
     private function __construct()
     {
         
     }
 
-    public static function into(Kuery $kuery, Table $table, Column ...$columns): static
+    public static function fromStep1(
+        Kuery $kuery,
+        Table $table,
+        array $columns,
+        array $values,
+    ): static
     {
         $object = new static;
         $object->kuery = $kuery;
         $object->table = $table;
         $object->columns = $columns;
+        $object->valueSet[] = $values;
 
         return $object;
     }
@@ -39,20 +48,45 @@ final class InsertQueryStep1
      *
      * @param mixed $values
      *
-     * @return InsertQueryStep2
+     * @return self
      * @throws \InvalidArgumentException
      */
-    public function values(...$values): InsertQueryStep2
+    public function values(...$values): self
     {
         if (count($this->columns) !== count($values)) {
             throw new \InvalidArgumentException('Count of values did not match with count of columns');
         }
 
-        return InsertQueryStep2::fromStep1(
+        $this->valueSet[] = $values;
+
+        return $this;
+    }
+
+    public function execute(): int
+    {
+        return $this->getFinalStep()
+                ->execute();
+    }
+
+    public function getSQL(): string
+    {
+        return $this->getFinalStep()
+                ->getSQL();
+    }
+
+    public function getBindValues(): array
+    {
+        return $this->getFinalStep()
+                ->getBindValues();
+    }
+
+    private function getFinalStep(): InsertQueryFinalStep
+    {
+        return InsertQueryFinalStep::fromLastStep(
                 $this->kuery,
                 $this->table,
                 $this->columns,
-                $values
+                $this->valueSet
         );
     }
 }

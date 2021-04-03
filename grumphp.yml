@@ -3,6 +3,8 @@ grumphp:
         phpcs: {
             ignore_patterns: ["tests/*"]
         },
+        psalm: {
+            config: psalm.xml
+        },
         phpunit: null,
-        psalm: null 
     }
