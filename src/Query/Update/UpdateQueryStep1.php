@@ -22,12 +22,6 @@ final class UpdateQueryStep1
     private array $joins;
 
     /** @psalm-suppress PropertyNotSetInConstructor */
-    private array $updatableColumns;
-
-    /** @psalm-suppress PropertyNotSetInConstructor */
-    private array $updatableValues;
-
-    /** @psalm-suppress PropertyNotSetInConstructor */
     private function __construct()
     {
         
@@ -69,25 +63,16 @@ final class UpdateQueryStep1
      * @param Column $column
      * @param mixed $value
      *
-     * @return self
+     * @return UpdateQueryStep2
      */
-    public function set(Column $column, $value): self
+    public function set(Column $column, $value): UpdateQueryStep2
     {
-        $this->updatableColumns[] = $column;
-        $this->updatableValues[] = $value;
-
-        return $this;
-    }
-
-    public function where(ConditionInterface $condition): UpdateQueryStep2
-    {
-        return UpdateQueryStep2::fromCondition(
+        return UpdateQueryStep2::fromStep1(
                 $this->kuery,
                 $this->table,
                 $this->joins,
-                $this->updatableColumns,
-                $this->updatableValues,
-                $condition,
+                $column,
+                $value,
         );
     }
 }

@@ -5,9 +5,10 @@ namespace Falgun\Typo\Query\Update;
 
 use Falgun\Kuery\Kuery;
 use Falgun\Typo\Query\Parts\Table;
-use Falgun\Typo\Query\Parts\Collection;
+use Falgun\Typo\Query\Parts\Column;
 use Falgun\Typo\Interfaces\SQLableInterface;
 use Falgun\Typo\Interfaces\ConditionInterface;
+use Falgun\Typo\Query\Update\UpdateQueryFinalStep;
 use Falgun\Typo\Query\Parts\Condition\ConditionGroup;
 
 final class UpdateQueryStep2 implements SQLableInterface
@@ -35,89 +36,85 @@ final class UpdateQueryStep2 implements SQLableInterface
         $this->conditionGroup = ConditionGroup::fromBlank();
     }
 
-    public static function fromCondition(
+    /**
+     * @param Kuery $kuery
+     * @param Table $table
+     * @param array $joins
+     * @param Column $column
+     * @param mixed $value
+     *
+     * @return UpdateQueryStep2
+     */
+    public static function fromStep1(
         Kuery $kuery,
         Table $table,
         array $joins,
-        array $columns,
-        array $values,
-        ConditionInterface $condition
+        Column $column,
+        $value
     ): UpdateQueryStep2
     {
         $object = new static;
         $object->kuery = $kuery;
         $object->table = $table;
         $object->joins = $joins;
-        $object->updatableColumns = $columns;
-        $object->updatableValues = $values;
-        $object->conditionGroup = ConditionGroup::fromFirstCondition($condition);
+        $object->set($column, $value);
 
         return $object;
     }
 
-    public function andWhere(ConditionInterface $condition): UpdateQueryStep2
+    /**
+     *
+     * @param Column $column
+     * @param mixed $value
+     *
+     * @return UpdateQueryStep2
+     */
+    public function set(Column $column, $value): UpdateQueryStep2
     {
-        $this->conditionGroup->and($condition);
+        $this->updatableColumns[] = $column;
+        $this->updatableValues[] = $value;
 
         return $this;
     }
 
-    public function orWhere(ConditionInterface $condition): UpdateQueryStep2
+    public function where(ConditionInterface $condition): UpdateQueryFinalStep
     {
-        $this->conditionGroup->or($condition);
-
-        return $this;
+        return UpdateQueryFinalStep::fromStep2(
+                $this->kuery,
+                $this->table,
+                $this->joins,
+                $this->updatableColumns,
+                $this->updatableValues,
+                $condition,
+        );
     }
 
     public function execute(): int
     {
-        $stmt = $this->kuery->run($this->getSQL(), $this->getBindValues());
-
-        return $stmt->affected_rows;
+        return $this->getFinalStep()
+                ->execute();
     }
 
     public function getSQL(): string
     {
-        $sql = 'UPDATE ' . $this->table->getSQL() . PHP_EOL;
-
-        foreach ($this->joins as $join) {
-            $sql .= $join->getSQL() . PHP_EOL;
-        }
-
-        $parts = [];
-        foreach ($this->updatableColumns as $i => $column) {
-            if ($this->updatableValues[$i] instanceof SQLableInterface) {
-                $parts[] = $column->getSQL() . ' = ' . $this->updatableValues[$i]->getSQL();
-            } else {
-                $parts[] = $column->getSQL() . ' = ?';
-            }
-        }
-
-        $sql .= 'SET ' . implode(', ', $parts);
-
-        $sql .= $this->conditionGroup->getSQL();
-
-        return $sql;
+        return $this->getFinalStep()
+                ->getSQL();
     }
 
     public function getBindValues(): array
     {
-        $binds = [];
+        return $this->getFinalStep()
+                ->getBindValues();
+    }
 
-        foreach ($this->joins as $join) {
-            $binds = [...$binds, ...$join->getBindValues()];
-        }
-
-        $binds = [
-            ...$binds,
-            ...array_filter(
+    private function getFinalStep(): UpdateQueryFinalStep
+    {
+        return UpdateQueryFinalStep::fromStep2(
+                $this->kuery,
+                $this->table,
+                $this->joins,
+                $this->updatableColumns,
                 $this->updatableValues,
-                fn($value) => !($value instanceof SQLableInterface)
-            )
-        ];
-
-        $binds = [...$binds, ...$this->conditionGroup->getBindValues()];
-
-        return $binds;
+        );
     }
 }

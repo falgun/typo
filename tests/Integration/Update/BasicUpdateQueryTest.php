@@ -74,4 +74,25 @@ final class BasicUpdateQueryTest extends AbstractIntegrationTest
             $query->getBindValues()
         );
     }
+
+    public function testUpdateWithoutCondition()
+    {
+        $builder = $this->getBuilder();
+
+        $userMeta = UsersMeta::new();
+
+        $query = $builder
+            ->update($userMeta->table())
+            ->set($userMeta->name(), '::new name::');
+
+        $this->assertSame(
+            <<<SQL
+            UPDATE users
+            SET users.name = ?
+            SQL,
+            $query->getSQL()
+        );
+
+        $this->assertSame(['::new name::',], $query->getBindValues());
+    }
 }
