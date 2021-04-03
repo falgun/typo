@@ -8,15 +8,11 @@ use Falgun\Typo\Interfaces\SQLableInterface;
 final class Collection
 {
 
-    /**
-     * 
-     * @var array<int, SQLableInterface>
-     */
+    /** @var array<int, SQLableInterface> */
     private array $parts;
     private string $prefix;
 
     /**
-     * 
      * @param array<int, SQLableInterface> $parts
      * @param string $prefix
      */
@@ -27,7 +23,6 @@ final class Collection
     }
 
     /**
-     * 
      * @param array<int, SQLableInterface> $parts
      * @param string $prefix
      */

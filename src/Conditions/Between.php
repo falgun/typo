@@ -32,7 +32,7 @@ class Between implements ConditionInterface
      * @param string|int|float|ColumnLikeInterface $sideB
      * @param string|int|float|ColumnLikeInterface $sideC
      */
-    private final function __construct(SQLableInterface $sideA, $sideB, $sideC)
+    final private function __construct(SQLableInterface $sideA, $sideB, $sideC)
     {
         $this->sideA = $sideA;
         $this->sideB = $sideB;
@@ -48,7 +48,7 @@ class Between implements ConditionInterface
      *
      * @return static
      */
-    public final static function fromSides(
+    final public static function fromSides(
         SQLableInterface $sideA,
         string|int|float|ColumnLikeInterface $sideB,
         string|int|float|ColumnLikeInterface $sideC,
@@ -71,7 +71,7 @@ class Between implements ConditionInterface
         return $this;
     }
 
-    public final function getSQL(): string
+    final public function getSQL(): string
     {
         $placeholderSQL = '';
 
@@ -104,7 +104,7 @@ class Between implements ConditionInterface
         return $sideA->getSQL() . ' BETWEEN ' . $placeholderSQL;
     }
 
-    public final function getBindValues(): array
+    final public function getBindValues(): array
     {
         $binds = [];
 

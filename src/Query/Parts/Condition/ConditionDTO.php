@@ -20,7 +20,6 @@ final class ConditionDTO implements SQLableInterface
     private ConditionInterface $condition;
 
     /**
-     * 
      * @param self::TYPE_DEFAULT|self::TYPE_AND|self::TYPE_OR $type
      * @param ConditionInterface $condition
      */

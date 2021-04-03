@@ -108,9 +108,12 @@ final class UpdateQueryStep2 implements SQLableInterface
             $binds = [...$binds, ...$join->getBindValues()];
         }
 
-        $binds = [...$binds, ...array_filter(
+        $binds = [
+            ...$binds,
+            ...array_filter(
                 $this->updatableValues,
-                fn($value) => !($value instanceof SQLableInterface))
+                fn($value) => !($value instanceof SQLableInterface)
+            )
         ];
 
         $binds = [...$binds, ...$this->conditionGroup->getBindValues()];

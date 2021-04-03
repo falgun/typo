@@ -25,7 +25,7 @@ abstract class AbstractCompareCondition implements ConditionInterface
      * @param SQLableInterface $sideA
      * @param mixed $sideB
      */
-    private final function __construct(SQLableInterface $sideA, $sideB)
+    final private function __construct(SQLableInterface $sideA, $sideB)
     {
         $this->sideA = $sideA;
         $this->sideB = $sideB;
@@ -39,7 +39,7 @@ abstract class AbstractCompareCondition implements ConditionInterface
      *
      * @return static
      */
-    public final static function fromSides(SQLableInterface $sideA, $sideB): static
+    final public static function fromSides(SQLableInterface $sideA, $sideB): static
     {
         return new static($sideA, $sideB);
     }
@@ -58,7 +58,7 @@ abstract class AbstractCompareCondition implements ConditionInterface
         return $this;
     }
 
-    public final function getSQL(): string
+    final public function getSQL(): string
     {
         if (is_object($this->sideB) && $this->sideB instanceof SQLableInterface) {
             $placeholderSQL = $this->sideB->getSQL();
@@ -86,9 +86,9 @@ abstract class AbstractCompareCondition implements ConditionInterface
         return '?';
     }
 
-    protected abstract function getConditionSQL(SQLableInterface $sideA, string $placeholderSQL): string;
+    abstract protected function getConditionSQL(SQLableInterface $sideA, string $placeholderSQL): string;
 
-    public final function getBindValues(): array
+    final public function getBindValues(): array
     {
         if (is_object($this->sideB) && $this->sideB instanceof SubQueryInterface) {
             // subquery

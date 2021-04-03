@@ -1,6 +1,8 @@
 grumphp:
     tasks: {
-        #phpcs: null,
+        phpcs: {
+            ignore_patterns: ["tests/*"]
+        },
         phpunit: null,
         psalm: null 
     }
