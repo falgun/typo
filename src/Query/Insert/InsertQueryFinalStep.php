@@ -66,7 +66,7 @@ final class InsertQueryFinalStep
         $bindables = [];
 
         foreach ($this->valueSet as $values) {
-            $bindables = array_merge($bindables, $values);
+            $bindables = [...$bindables, ...$values];
         }
 
         return $bindables;
