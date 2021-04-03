@@ -67,4 +67,31 @@ final class DeleteQueryStep1
                 $condition,
         );
     }
+
+    public function execute(): int
+    {
+        return $this->getFinalStep()
+                ->execute();
+    }
+
+    public function getSQL(): string
+    {
+        return $this->getFinalStep()
+                ->getSQL();
+    }
+
+    public function getBindValues(): array
+    {
+        return $this->getFinalStep()
+                ->getBindValues();
+    }
+
+    private function getFinalStep(): DeleteQueryFinalStep
+    {
+        return DeleteQueryFinalStep::fromLastStep(
+                $this->kuery,
+                $this->table,
+                $this->joins,
+        );
+    }
 }

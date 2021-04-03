@@ -35,6 +35,28 @@ final class BasicDeleteQueryTest extends AbstractIntegrationTest
         );
     }
 
+    public function testDeleteQueryWithoutQuery()
+    {
+        $builder = $this->getBuilder();
+
+        $userMeta = UsersMeta::new();
+
+        $query = $builder
+            ->delete($userMeta->table());
+
+        $this->assertSame(
+            <<<SQL
+            DELETE FROM users
+            SQL,
+            $query->getSQL()
+        );
+
+        $this->assertSame(
+            [],
+            $query->getBindValues()
+        );
+    }
+
     public function testMultiConditionDeleteQuery()
     {
         $builder = $this->getBuilder();

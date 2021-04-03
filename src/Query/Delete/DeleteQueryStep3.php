@@ -7,10 +7,9 @@ use Falgun\Kuery\Kuery;
 use Falgun\Typo\Query\Parts\Limit;
 use Falgun\Typo\Query\Parts\Table;
 use Falgun\Typo\Interfaces\OrderByInterface;
-use Falgun\Typo\Interfaces\ConditionInterface;
 use Falgun\Typo\Query\Parts\Condition\ConditionGroup;
 
-final class DeleteQueryStep2
+final class DeleteQueryStep3
 {
 
     /** @psalm-suppress PropertyNotSetInConstructor */
@@ -35,45 +34,22 @@ final class DeleteQueryStep2
         $this->conditionGroup = ConditionGroup::fromBlank();
     }
 
-    public static function fromCondition(
+    public static function fromOrderBy(
         Kuery $kuery,
         Table $table,
         array $joins,
-        ConditionInterface $condition
-    ): DeleteQueryStep2
+        ConditionGroup $conditionGroup,
+        array $orderBys,
+    ): DeleteQueryStep3
     {
         $object = new static;
         $object->kuery = $kuery;
         $object->table = $table;
         $object->joins = $joins;
-        $object->conditionGroup = ConditionGroup::fromFirstCondition($condition);
+        $object->conditionGroup = $conditionGroup;
+        $object->orderBys = $orderBys;
 
         return $object;
-    }
-
-    public function andWhere(ConditionInterface $condition): DeleteQueryStep2
-    {
-        $this->conditionGroup->and($condition);
-
-        return $this;
-    }
-
-    public function orWhere(ConditionInterface $condition): DeleteQueryStep2
-    {
-        $this->conditionGroup->or($condition);
-
-        return $this;
-    }
-
-    public function orderBy(OrderByInterface $orderBy, OrderByInterface ...$orderBys): DeleteQueryStep3
-    {
-        return DeleteQueryStep3::fromOrderBy(
-                $this->kuery,
-                $this->table,
-                $this->joins,
-                $this->conditionGroup,
-                [...$this->orderBys, $orderBy, ...$orderBys],
-        );
     }
 
     public function limit(int $offsetOrLimit, ?int $limit = null): DeleteQueryFinalStep
@@ -83,7 +59,7 @@ final class DeleteQueryStep2
                 $this->table,
                 $this->joins,
                 $this->conditionGroup,
-                [],
+                $this->orderBys,
                 Limit::fromOffsetLimit($offsetOrLimit, $limit),
         );
     }
