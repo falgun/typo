@@ -1,6 +1,6 @@
 <?php
 
-namespace Falgun\Typo\Conditions;
+namespace Falgun\Typo\Query\Conditions;
 
 use Falgun\Typo\Query\SQLableInterface;
 

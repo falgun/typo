@@ -7,7 +7,7 @@ use Falgun\Kuery\Kuery;
 use Falgun\Typo\Query\Parts\Table;
 use Falgun\Typo\Query\Parts\Column;
 use Falgun\Typo\Query\Parts\JoinInterface;
-use Falgun\Typo\Conditions\ConditionInterface;
+use Falgun\Typo\Query\Conditions\ConditionInterface;
 
 final class UpdateQueryStep1
 {

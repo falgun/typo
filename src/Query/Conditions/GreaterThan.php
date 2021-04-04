@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Falgun\Typo\Conditions;
+namespace Falgun\Typo\Query\Conditions;
 
 use Falgun\Typo\Query\SQLableInterface;
 

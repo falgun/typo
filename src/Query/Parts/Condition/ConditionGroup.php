@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Falgun\Typo\Query\Parts\Condition;
 
 use Falgun\Typo\Query\SQLableInterface;
-use Falgun\Typo\Conditions\ConditionInterface;
+use Falgun\Typo\Query\Conditions\ConditionInterface;
 
 final class ConditionGroup implements SQLableInterface
 {

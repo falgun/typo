@@ -3,7 +3,7 @@
 namespace Falgun\Typo\Query\Parts;
 
 use Falgun\Typo\Query\SQLableInterface;
-use Falgun\Typo\Conditions\ConditionInterface;
+use Falgun\Typo\Query\Conditions\ConditionInterface;
 
 interface JoinInterface extends SQLableInterface
 {

@@ -8,7 +8,7 @@ use Falgun\Typo\Query\Parts\Limit;
 use Falgun\Typo\Query\Parts\Table;
 use Falgun\Typo\Query\Parts\Collection;
 use Falgun\Typo\Query\Parts\OrderByInterface;
-use Falgun\Typo\Conditions\ConditionInterface;
+use Falgun\Typo\Query\Conditions\ConditionInterface;
 use Falgun\Typo\Query\Parts\Condition\ConditionGroup;
 
 final class DeleteQueryFinalStep

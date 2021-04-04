@@ -10,7 +10,7 @@ use Falgun\Typo\Query\Parts\Collection;
 use Falgun\Typo\Query\Parts\JoinInterface;
 use Falgun\Typo\Query\Parts\OrderByInterface;
 use Falgun\Typo\Query\SQLableInterface;
-use Falgun\Typo\Conditions\ConditionInterface;
+use Falgun\Typo\Query\Conditions\ConditionInterface;
 use Falgun\Typo\Query\Parts\TableLikeInterface;
 use Falgun\Typo\Query\Parts\ColumnLikeInterface;
 use Falgun\Typo\Query\Parts\Condition\ConditionGroup;

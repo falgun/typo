@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Falgun\Typo\Query\Parts\Condition;
 
-use Falgun\Typo\Conditions\ConditionInterface;
+use Falgun\Typo\Query\Conditions\ConditionInterface;
 use Falgun\Typo\Query\SQLableInterface;
 
 final class ConditionDTO implements SQLableInterface

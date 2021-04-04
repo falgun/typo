@@ -6,7 +6,7 @@ namespace Falgun\Typo\Query\Update;
 use Falgun\Kuery\Kuery;
 use Falgun\Typo\Query\Parts\Table;
 use Falgun\Typo\Query\SQLableInterface;
-use Falgun\Typo\Conditions\ConditionInterface;
+use Falgun\Typo\Query\Conditions\ConditionInterface;
 use Falgun\Typo\Query\Parts\Condition\ConditionGroup;
 
 final class UpdateQueryFinalStep

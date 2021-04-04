@@ -3,23 +3,23 @@ declare(strict_types=1);
 
 namespace Falgun\Typo\Query\Parts;
 
-use Falgun\Typo\Conditions\In;
-use Falgun\Typo\Conditions\Like;
-use Falgun\Typo\Conditions\NotIn;
-use Falgun\Typo\Conditions\Equal;
-use Falgun\Typo\Conditions\IsNull;
-use Falgun\Typo\Conditions\NotLike;
-use Falgun\Typo\Conditions\Between;
+use Falgun\Typo\Query\Conditions\In;
+use Falgun\Typo\Query\Conditions\Like;
+use Falgun\Typo\Query\Conditions\NotIn;
+use Falgun\Typo\Query\Conditions\Equal;
+use Falgun\Typo\Query\Conditions\IsNull;
+use Falgun\Typo\Query\Conditions\NotLike;
+use Falgun\Typo\Query\Conditions\Between;
 use Falgun\Typo\Query\Parts\Literal;
 use Falgun\Typo\Query\Parts\OrderBy;
-use Falgun\Typo\Conditions\NotEqual;
-use Falgun\Typo\Conditions\IsNotNull;
-use Falgun\Typo\Conditions\NotBetween;
-use Falgun\Typo\Conditions\LesserThan;
-use Falgun\Typo\Conditions\GreaterThan;
-use Falgun\Typo\Conditions\LesserThanEqual;
-use Falgun\Typo\Conditions\GreaterThanEqual;
-use Falgun\Typo\Conditions\ConditionInterface;
+use Falgun\Typo\Query\Conditions\NotEqual;
+use Falgun\Typo\Query\Conditions\IsNotNull;
+use Falgun\Typo\Query\Conditions\NotBetween;
+use Falgun\Typo\Query\Conditions\LesserThan;
+use Falgun\Typo\Query\Conditions\GreaterThan;
+use Falgun\Typo\Query\Conditions\LesserThanEqual;
+use Falgun\Typo\Query\Conditions\GreaterThanEqual;
+use Falgun\Typo\Query\Conditions\ConditionInterface;
 
 final class Column implements ColumnLikeInterface
 {

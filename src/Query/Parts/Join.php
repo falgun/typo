@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Falgun\Typo\Query\Parts;
 
-use Falgun\Typo\Conditions\ConditionInterface;
+use Falgun\Typo\Query\Conditions\ConditionInterface;
 
 final class Join implements JoinInterface
 {

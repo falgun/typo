@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Falgun\Typo\Conditions;
+namespace Falgun\Typo\Query\Conditions;
 
 use Falgun\Typo\Query\SQLableInterface;
 
-final class In extends AbstractCompareCondition implements ConditionInterface
+final class NotIn extends AbstractCompareCondition implements ConditionInterface
 {
 
     /**
@@ -20,7 +20,7 @@ final class In extends AbstractCompareCondition implements ConditionInterface
 
     protected function getConditionSQL(SQLableInterface $sideA, string $placeholderSQL): string
     {
-        return $sideA->getSQL() . ' IN (' . $placeholderSQL . ')';
+        return $sideA->getSQL() . ' NOT IN (' . $placeholderSQL . ')';
     }
 
     /**
