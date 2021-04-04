@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Falgun\Typo\Query\Parts;
 
-use Falgun\Typo\Interfaces\ColumnLikeInterface;
-
 final class Asterisk implements ColumnLikeInterface
 {
 

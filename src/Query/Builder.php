@@ -10,7 +10,7 @@ use Falgun\Typo\Query\Select\SelectQueryStep1;
 use Falgun\Typo\Query\Insert\InsertQueryStep1;
 use Falgun\Typo\Query\Update\UpdateQueryStep1;
 use Falgun\Typo\Query\Delete\DeleteQueryStep1;
-use Falgun\Typo\Interfaces\ColumnLikeInterface;
+use Falgun\Typo\Query\Parts\ColumnLikeInterface;
 
 final class Builder
 {

@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Falgun\Typo\Query\Select;
 
-use Falgun\Typo\Interfaces\SubQueryInterface;
+use Falgun\Typo\Query\SubQueryInterface;
 use Falgun\Typo\Query\Select\SelectQueryStep2;
-use Falgun\Typo\Interfaces\TableLikeInterface;
+use Falgun\Typo\Query\Parts\TableLikeInterface;
 
 final class SubQueryTable implements TableLikeInterface, SubQueryInterface
 {

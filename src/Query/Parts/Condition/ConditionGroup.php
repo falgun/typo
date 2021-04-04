@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Falgun\Typo\Query\Parts\Condition;
 
-use Falgun\Typo\Interfaces\SQLableInterface;
-use Falgun\Typo\Interfaces\ConditionInterface;
+use Falgun\Typo\Query\SQLableInterface;
+use Falgun\Typo\Conditions\ConditionInterface;
 
 final class ConditionGroup implements SQLableInterface
 {

@@ -1,6 +1,8 @@
 <?php
 
-namespace Falgun\Typo\Interfaces;
+namespace Falgun\Typo\Query\Parts;
+
+use Falgun\Typo\Query\SQLableInterface;
 
 interface TableLikeInterface extends SQLableInterface
 {

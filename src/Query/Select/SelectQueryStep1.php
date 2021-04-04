@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace Falgun\Typo\Query\Select;
 
 use Falgun\Kuery\Kuery;
-use Falgun\Typo\Interfaces\ConditionInterface;
-use Falgun\Typo\Interfaces\TableLikeInterface;
-use Falgun\Typo\Interfaces\ColumnLikeInterface;
+use Falgun\Typo\Conditions\ConditionInterface;
+use Falgun\Typo\Query\Parts\TableLikeInterface;
+use Falgun\Typo\Query\Parts\ColumnLikeInterface;
 
 final class SelectQueryStep1
 {

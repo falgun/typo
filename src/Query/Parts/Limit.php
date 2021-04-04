@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Falgun\Typo\Query\Parts;
 
-use Falgun\Typo\Interfaces\SQLableInterface;
+use Falgun\Typo\Query\SQLableInterface;
 
 final class Limit implements SQLableInterface
 {

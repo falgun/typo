@@ -3,10 +3,7 @@ declare(strict_types=1);
 
 namespace Falgun\Typo\Query\Parts;
 
-use Falgun\Typo\Interfaces\JoinInterface;
-use Falgun\Typo\Interfaces\ConditionInterface;
-use Falgun\Typo\Interfaces\TableLikeInterface;
-use Falgun\Typo\Interfaces\ColumnLikeInterface;
+use Falgun\Typo\Conditions\ConditionInterface;
 
 final class Table implements TableLikeInterface
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Falgun\Typo\Interfaces;
+namespace Falgun\Typo\Query\Parts;
 
-use Falgun\Typo\Interfaces\SQLableInterface;
-use Falgun\Typo\Interfaces\ConditionInterface;
+use Falgun\Typo\Query\SQLableInterface;
+use Falgun\Typo\Conditions\ConditionInterface;
 
 interface JoinInterface extends SQLableInterface
 {

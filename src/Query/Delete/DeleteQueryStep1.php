@@ -5,8 +5,8 @@ namespace Falgun\Typo\Query\Delete;
 
 use Falgun\Kuery\Kuery;
 use Falgun\Typo\Query\Parts\Table;
-use Falgun\Typo\Interfaces\JoinInterface;
-use Falgun\Typo\Interfaces\ConditionInterface;
+use Falgun\Typo\Query\Parts\JoinInterface;
+use Falgun\Typo\Conditions\ConditionInterface;
 
 final class DeleteQueryStep1
 {

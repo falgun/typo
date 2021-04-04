@@ -19,9 +19,7 @@ use Falgun\Typo\Conditions\LesserThan;
 use Falgun\Typo\Conditions\GreaterThan;
 use Falgun\Typo\Conditions\LesserThanEqual;
 use Falgun\Typo\Conditions\GreaterThanEqual;
-use Falgun\Typo\Interfaces\OrderByInterface;
-use Falgun\Typo\Interfaces\ConditionInterface;
-use Falgun\Typo\Interfaces\ColumnLikeInterface;
+use Falgun\Typo\Conditions\ConditionInterface;
 
 final class Column implements ColumnLikeInterface
 {

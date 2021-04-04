@@ -1,6 +1,8 @@
 <?php
 
-namespace Falgun\Typo\Interfaces;
+namespace Falgun\Typo\Conditions;
+
+use Falgun\Typo\Query\SQLableInterface;
 
 interface ConditionInterface extends SQLableInterface
 {

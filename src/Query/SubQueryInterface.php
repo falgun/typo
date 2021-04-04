@@ -1,6 +1,6 @@
 <?php
 
-namespace Falgun\Typo\Interfaces;
+namespace Falgun\Typo\Query;
 
 interface SubQueryInterface extends SQLableInterface
 {

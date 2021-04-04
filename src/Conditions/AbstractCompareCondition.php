@@ -3,9 +3,8 @@ declare(strict_types=1);
 
 namespace Falgun\Typo\Conditions;
 
-use Falgun\Typo\Interfaces\SQLableInterface;
-use Falgun\Typo\Interfaces\SubQueryInterface;
-use Falgun\Typo\Interfaces\ConditionInterface;
+use Falgun\Typo\Query\SQLableInterface;
+use Falgun\Typo\Query\SubQueryInterface;
 use Falgun\Typo\Query\Parts\Condition\ConditionGroup;
 
 abstract class AbstractCompareCondition implements ConditionInterface

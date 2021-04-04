@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace Falgun\Typo\Conditions;
 
-use Falgun\Typo\Interfaces\SQLableInterface;
-use Falgun\Typo\Interfaces\ConditionInterface;
+use Falgun\Typo\Query\SQLableInterface;
 
 final class GreaterThanEqual extends AbstractCompareCondition implements ConditionInterface
 {

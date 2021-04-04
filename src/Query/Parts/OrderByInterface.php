@@ -1,8 +1,8 @@
 <?php
 
-namespace Falgun\Typo\Interfaces;
+namespace Falgun\Typo\Query\Parts;
 
-use Falgun\Typo\Query\Parts\Column;
+use Falgun\Typo\Query\SQLableInterface;
 
 interface OrderByInterface extends SQLableInterface
 {

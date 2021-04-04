@@ -7,12 +7,12 @@ use Falgun\Kuery\Kuery;
 use Falgun\Typo\Query\Parts\Limit;
 use Falgun\Typo\Query\Parts\Column;
 use Falgun\Typo\Query\Parts\Collection;
-use Falgun\Typo\Interfaces\JoinInterface;
-use Falgun\Typo\Interfaces\OrderByInterface;
-use Falgun\Typo\Interfaces\SQLableInterface;
-use Falgun\Typo\Interfaces\ConditionInterface;
-use Falgun\Typo\Interfaces\TableLikeInterface;
-use Falgun\Typo\Interfaces\ColumnLikeInterface;
+use Falgun\Typo\Query\Parts\JoinInterface;
+use Falgun\Typo\Query\Parts\OrderByInterface;
+use Falgun\Typo\Query\SQLableInterface;
+use Falgun\Typo\Conditions\ConditionInterface;
+use Falgun\Typo\Query\Parts\TableLikeInterface;
+use Falgun\Typo\Query\Parts\ColumnLikeInterface;
 use Falgun\Typo\Query\Parts\Condition\ConditionGroup;
 
 final class SelectQueryStep2 implements SQLableInterface

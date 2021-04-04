@@ -3,9 +3,8 @@ declare(strict_types=1);
 
 namespace Falgun\Typo\Conditions;
 
-use Falgun\Typo\Interfaces\SQLableInterface;
-use Falgun\Typo\Interfaces\ConditionInterface;
-use Falgun\Typo\Interfaces\ColumnLikeInterface;
+use Falgun\Typo\Query\SQLableInterface;
+use Falgun\Typo\Query\Parts\ColumnLikeInterface;
 use Falgun\Typo\Query\Parts\Condition\ConditionGroup;
 
 class Between implements ConditionInterface

@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Falgun\Typo\Query\Select;
 
-use Falgun\Typo\Interfaces\SubQueryInterface;
+use Falgun\Typo\Query\SubQueryInterface;
 use Falgun\Typo\Query\Select\SelectQueryStep2;
-use Falgun\Typo\Interfaces\ColumnLikeInterface;
+use Falgun\Typo\Query\Parts\ColumnLikeInterface;
 
 final class SubQueryColumn implements ColumnLikeInterface, SubQueryInterface
 {
