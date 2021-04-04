@@ -12,6 +12,7 @@ use Falgun\Typo\Query\Parts\JoinInterface;
 use Falgun\Typo\Query\Parts\OrderByInterface;
 use Falgun\Typo\Query\Parts\TableLikeInterface;
 use Falgun\Typo\Query\Parts\ColumnLikeInterface;
+use Falgun\Typo\Query\Conditions\ConditionInterface;
 use Falgun\Typo\Query\Parts\Condition\ConditionGroup;
 
 final class SelectQueryFinalStep implements SelectQueryInterface
@@ -41,6 +42,7 @@ final class SelectQueryFinalStep implements SelectQueryInterface
      * @psalm-suppress PropertyNotSetInConstructor
      */
     private array $groupBys = [];
+    private ?ConditionInterface $having;
 
     /**
      * @var array<int, OrderByInterface>
@@ -55,6 +57,7 @@ final class SelectQueryFinalStep implements SelectQueryInterface
     private function __construct()
     {
         $this->conditionGroup = ConditionGroup::fromBlank();
+        $this->having = null;
         $this->limit = Limit::fromBlank();
     }
 
@@ -65,6 +68,7 @@ final class SelectQueryFinalStep implements SelectQueryInterface
      * @param array<int, JoinInterface> $joins
      * @param ConditionGroup $conditionGroup
      * @param array<int, Column> $groupBys
+     * @param ConditionInterface $having
      * @param array<int, OrderByInterface> $orderBys
      * @param Limit $limit
      *
@@ -77,6 +81,7 @@ final class SelectQueryFinalStep implements SelectQueryInterface
         array $joins = [],
         ConditionGroup $conditionGroup = null,
         array $groupBys = [],
+        ConditionInterface $having = null,
         array $orderBys = [],
         Limit $limit = null,
     ): SelectQueryFinalStep
@@ -88,6 +93,7 @@ final class SelectQueryFinalStep implements SelectQueryInterface
         $object->joins = $joins;
         $object->conditionGroup = $conditionGroup ?? ConditionGroup::fromBlank();
         $object->groupBys = $groupBys;
+        $object->having = $having;
         $object->orderBys = $orderBys;
         $object->limit = $limit ?? Limit::fromBlank();
 
@@ -126,6 +132,10 @@ final class SelectQueryFinalStep implements SelectQueryInterface
         $sql .= Collection::from($this->groupBys, PHP_EOL . 'GROUP BY')
             ->join();
 
+        if (isset($this->having)) {
+            $sql .= PHP_EOL . 'HAVING ' . $this->having->getSQL();
+        }
+
         $sql .= Collection::from($this->orderBys, PHP_EOL . 'ORDER BY')
             ->join();
 
@@ -149,6 +159,10 @@ final class SelectQueryFinalStep implements SelectQueryInterface
         $binds = [...$binds, ...$this->table->getBindValues()];
 
         $binds = [...$binds, ...$this->conditionGroup->getBindValues()];
+
+        if (isset($this->having)) {
+            $binds = [...$binds, ...$this->having->getBindValues()];
+        }
 
         $binds = [...$binds, ...$this->limit->getBindValues()];
 

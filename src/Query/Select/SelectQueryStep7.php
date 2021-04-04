@@ -11,6 +11,7 @@ use Falgun\Typo\Query\Parts\JoinInterface;
 use Falgun\Typo\Query\Parts\OrderByInterface;
 use Falgun\Typo\Query\Parts\TableLikeInterface;
 use Falgun\Typo\Query\Parts\ColumnLikeInterface;
+use Falgun\Typo\Query\Conditions\ConditionInterface;
 use Falgun\Typo\Query\Parts\Condition\ConditionGroup;
 
 final class SelectQueryStep7 implements SelectQueryInterface
@@ -40,6 +41,7 @@ final class SelectQueryStep7 implements SelectQueryInterface
      * @psalm-suppress PropertyNotSetInConstructor
      */
     private array $groupBys = [];
+    private ?ConditionInterface $having;
 
     /**
      * @var array<int, OrderByInterface>
@@ -51,6 +53,7 @@ final class SelectQueryStep7 implements SelectQueryInterface
     private function __construct()
     {
         $this->conditionGroup = ConditionGroup::fromBlank();
+        $this->having = null;
     }
 
     /**
@@ -60,6 +63,7 @@ final class SelectQueryStep7 implements SelectQueryInterface
      * @param array<int, JoinInterface> $joins
      * @param ConditionGroup $conditionGroup
      * @param array<int, Column> $groupBys
+     * @param ConditionInterface $having
      * @param array<int, OrderByInterface> $orderBys
      *
      * @return SelectQueryStep7
@@ -71,6 +75,7 @@ final class SelectQueryStep7 implements SelectQueryInterface
         array $joins,
         ConditionGroup $conditionGroup,
         array $groupBys,
+        ConditionInterface $having,
         array $orderBys,
     ): SelectQueryStep7
     {
@@ -81,6 +86,7 @@ final class SelectQueryStep7 implements SelectQueryInterface
         $object->joins = $joins;
         $object->conditionGroup = $conditionGroup;
         $object->groupBys = $groupBys;
+        $object->having = $having;
         $object->orderBys = $orderBys;
 
         return $object;
@@ -95,6 +101,7 @@ final class SelectQueryStep7 implements SelectQueryInterface
                 $this->joins,
                 $this->conditionGroup,
                 $this->groupBys,
+                $this->having,
                 $this->orderBys,
                 Limit::fromOffsetLimit($offsetOrLimit, $limit),
         );
@@ -137,6 +144,7 @@ final class SelectQueryStep7 implements SelectQueryInterface
                 $this->joins,
                 $this->conditionGroup,
                 $this->groupBys,
+                $this->having,
                 $this->orderBys,
         );
     }

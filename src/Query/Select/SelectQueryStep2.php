@@ -41,6 +41,7 @@ final class SelectQueryStep2 implements SelectQueryInterface
      * @psalm-suppress PropertyNotSetInConstructor
      */
     private array $groupBys = [];
+    private ?ConditionInterface $having;
 
     /**
      * @var array<int, OrderByInterface>
@@ -55,6 +56,7 @@ final class SelectQueryStep2 implements SelectQueryInterface
     private function __construct()
     {
         $this->conditionGroup = ConditionGroup::fromBlank();
+        $this->having = null;
         $this->limit = Limit::fromBlank();
     }
 
@@ -128,6 +130,13 @@ final class SelectQueryStep2 implements SelectQueryInterface
         return $this;
     }
 
+    public function having(ConditionInterface $havingCondition): SelectQueryStep2
+    {
+        $this->having = $havingCondition;
+
+        return $this;
+    }
+
     /**
      * @psalm-suppress DuplicateArrayKey
      */
@@ -147,6 +156,7 @@ final class SelectQueryStep2 implements SelectQueryInterface
                 $this->joins,
                 $this->conditionGroup,
                 $this->groupBys,
+                $this->having,
                 $this->orderBys,
                 Limit::fromOffsetLimit($offsetOrLimit, $limit),
         );
@@ -189,6 +199,7 @@ final class SelectQueryStep2 implements SelectQueryInterface
                 $this->joins,
                 $this->conditionGroup,
                 $this->groupBys,
+                $this->having,
                 $this->orderBys,
                 $this->limit
         );
