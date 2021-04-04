@@ -18,6 +18,12 @@ final class Asterisk implements ColumnLikeInterface
         return new static($tableName);
     }
 
+    /**
+     * @param string $alias
+     *
+     * @return ColumnLikeInterface
+     * @throws \InvalidArgumentException
+     */
     public function as(string $alias): ColumnLikeInterface
     {
         throw new \InvalidArgumentException('Alias can not be applied on Asterisk');

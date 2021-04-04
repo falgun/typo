@@ -65,6 +65,10 @@ final class Join implements JoinInterface
         return $this;
     }
 
+    /**
+     * @return string
+     * @throws \RuntimeException
+     */
     public function getSQL(): string
     {
         $sql = ($this->type ? $this->type . ' ' : '') .
