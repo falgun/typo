@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Falgun\Typo\Query\Select;
 
 use Falgun\Kuery\Kuery;
+use Falgun\Typo\Query\Result;
 use Falgun\Typo\Query\Parts\Limit;
 use Falgun\Typo\Query\Parts\Column;
 use Falgun\Typo\Query\Parts\Collection;
@@ -127,11 +128,11 @@ final class SelectQueryStep2 implements SQLableInterface
         return $this;
     }
 
-    public function fetch(): array
+    public function fetch(): Result
     {
         $stmt = $this->kuery->run($this->getSQL(), $this->getBindValues());
 
-        return $this->kuery->fetchAllAsArray($stmt);
+        return Result::fromStmtKuery($stmt, $this->kuery);
     }
 
     public function as(string $alias): ColumnLikeInterface
