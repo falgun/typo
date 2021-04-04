@@ -7,14 +7,12 @@ use Falgun\Kuery\Kuery;
 use Falgun\Typo\Query\Result;
 use Falgun\Typo\Query\Parts\Limit;
 use Falgun\Typo\Query\Parts\Column;
-use Falgun\Typo\Query\Parts\JoinInterface;
 use Falgun\Typo\Query\Parts\OrderByInterface;
 use Falgun\Typo\Query\Parts\TableLikeInterface;
 use Falgun\Typo\Query\Parts\ColumnLikeInterface;
-use Falgun\Typo\Query\Conditions\ConditionInterface;
 use Falgun\Typo\Query\Parts\Condition\ConditionGroup;
 
-final class SelectQueryStep2 implements SelectQueryInterface
+final class SelectQueryStep7 implements SelectQueryInterface
 {
 
     /** @psalm-suppress PropertyNotSetInConstructor */
@@ -43,80 +41,31 @@ final class SelectQueryStep2 implements SelectQueryInterface
     private array $orderBys = [];
 
     /** @psalm-suppress PropertyNotSetInConstructor */
-    private Limit $limit;
-
-    /** @psalm-suppress PropertyNotSetInConstructor */
     private function __construct()
     {
         $this->conditionGroup = ConditionGroup::fromBlank();
-        $this->limit = Limit::fromBlank();
     }
 
-    public static function fromTable(Kuery $kuery, array $columns, TableLikeInterface $table): static
+    public static function fromLastStep(
+        Kuery $kuery,
+        array $columns,
+        TableLikeInterface $table,
+        array $joins,
+        ConditionGroup $conditionGroup,
+        array $groupBys,
+        array $orderBys,
+    ): SelectQueryStep7
     {
         $object = new static;
         $object->kuery = $kuery;
         $object->selectedColumns = $columns;
         $object->table = $table;
+        $object->joins = $joins;
+        $object->conditionGroup = $conditionGroup;
+        $object->groupBys = $groupBys;
+        $object->orderBys = $orderBys;
 
         return $object;
-    }
-
-    public function join(JoinInterface $join): SelectQueryStep2
-    {
-        $this->joins[] = $join;
-
-        return $this;
-    }
-
-    public function innerJoin(JoinInterface $join): SelectQueryStep2
-    {
-        $this->joins[] = $join->asInner();
-
-        return $this;
-    }
-
-    public function leftJoin(JoinInterface $join): SelectQueryStep2
-    {
-        $this->joins[] = $join->asLeft();
-
-        return $this;
-    }
-
-    public function where(ConditionInterface $condition): SelectQueryStep2
-    {
-        // intentionally making where() required before andWhere(), orWhere()
-        $this->conditionGroup = ConditionGroup::fromFirstCondition($condition);
-
-        return $this;
-    }
-
-    public function andWhere(ConditionInterface $condition): SelectQueryStep2
-    {
-        $this->conditionGroup->and($condition);
-
-        return $this;
-    }
-
-    public function orWhere(ConditionInterface $condition): SelectQueryStep2
-    {
-        $this->conditionGroup->or($condition);
-
-        return $this;
-    }
-
-    public function groupBy(Column $groupBy, Column ...$groupBys): SelectQueryStep2
-    {
-        $this->groupBys = [...$this->groupBys, $groupBy, ... $groupBys];
-
-        return $this;
-    }
-
-    public function orderBy(OrderByInterface $orderBy, OrderByInterface ...$orderBys): SelectQueryStep2
-    {
-        $this->orderBys = [...$this->orderBys, $orderBy, ... $orderBys];
-
-        return $this;
     }
 
     public function limit(int $offsetOrLimit, ?int $limit = null): SelectQueryFinalStep
@@ -171,7 +120,6 @@ final class SelectQueryStep2 implements SelectQueryInterface
                 $this->conditionGroup,
                 $this->groupBys,
                 $this->orderBys,
-                $this->limit
         );
     }
 }

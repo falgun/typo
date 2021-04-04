@@ -4,22 +4,21 @@ declare(strict_types=1);
 namespace Falgun\Typo\Query\Select;
 
 use Falgun\Typo\Query\SubQueryInterface;
-use Falgun\Typo\Query\Select\SelectQueryStep2;
 use Falgun\Typo\Query\Parts\TableLikeInterface;
 
 final class SubQueryTable implements TableLikeInterface, SubQueryInterface
 {
 
-    private SelectQueryStep2 $selectQuery;
+    private SelectQueryInterface $selectQuery;
     private string $alias;
 
-    private function __construct(SelectQueryStep2 $selectQuery, string $alias = '')
+    private function __construct(SelectQueryInterface $selectQuery, string $alias = '')
     {
         $this->selectQuery = $selectQuery;
         $this->alias = $alias;
     }
 
-    public static function fromQuery(SelectQueryStep2 $selectQuery): SubQueryTable
+    public static function fromQuery(SelectQueryInterface $selectQuery): SubQueryTable
     {
         return new static($selectQuery);
     }
