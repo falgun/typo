@@ -14,7 +14,10 @@ final class SelectQueryStep1
     /** @psalm-suppress PropertyNotSetInConstructor */
     private Kuery $kuery;
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @var array<int, ColumnLikeInterface>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private array $selectedColumns;
 
     /** @psalm-suppress PropertyNotSetInConstructor */
@@ -23,6 +26,12 @@ final class SelectQueryStep1
         
     }
 
+    /**
+     * @param Kuery $kuery
+     * @param array<int, ColumnLikeInterface> $columns
+     *
+     * @return static
+     */
     public static function selectColumns(Kuery $kuery, array $columns): static
     {
         $object = new static;

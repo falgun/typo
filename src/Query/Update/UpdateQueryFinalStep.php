@@ -4,8 +4,10 @@ declare(strict_types=1);
 namespace Falgun\Typo\Query\Update;
 
 use Falgun\Kuery\Kuery;
+use Falgun\Typo\Query\Parts\Column;
 use Falgun\Typo\Query\Parts\Table;
 use Falgun\Typo\Query\SQLableInterface;
+use Falgun\Typo\Query\Parts\JoinInterface;
 use Falgun\Typo\Query\Conditions\ConditionInterface;
 use Falgun\Typo\Query\Parts\Condition\ConditionGroup;
 
@@ -18,13 +20,22 @@ final class UpdateQueryFinalStep
     /** @psalm-suppress PropertyNotSetInConstructor */
     private Table $table;
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @var array<int, JoinInterface>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private array $joins;
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @var array<int, Column>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private array $updatableColumns;
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @var array<int, mixed>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private array $updatableValues;
     private ConditionGroup $conditionGroup;
 

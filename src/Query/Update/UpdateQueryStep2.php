@@ -7,6 +7,7 @@ use Falgun\Kuery\Kuery;
 use Falgun\Typo\Query\Parts\Table;
 use Falgun\Typo\Query\Parts\Column;
 use Falgun\Typo\Query\SQLableInterface;
+use Falgun\Typo\Query\Parts\JoinInterface;
 use Falgun\Typo\Query\Conditions\ConditionInterface;
 use Falgun\Typo\Query\Update\UpdateQueryFinalStep;
 use Falgun\Typo\Query\Parts\Condition\ConditionGroup;
@@ -20,13 +21,22 @@ final class UpdateQueryStep2 implements SQLableInterface
     /** @psalm-suppress PropertyNotSetInConstructor */
     private Table $table;
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @var array<int, JoinInterface>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private array $joins;
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @var array<int, Column>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private array $updatableColumns;
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @var array<int, mixed>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private array $updatableValues;
     private ConditionGroup $conditionGroup;
 
@@ -39,7 +49,7 @@ final class UpdateQueryStep2 implements SQLableInterface
     /**
      * @param Kuery $kuery
      * @param Table $table
-     * @param array $joins
+     * @param array<int, JoinInterface> $joins
      * @param Column $column
      * @param mixed $value
      *

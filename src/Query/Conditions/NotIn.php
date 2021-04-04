@@ -26,7 +26,7 @@ final class NotIn extends AbstractCompareCondition implements ConditionInterface
     /**
      * @param mixed $sideB
      *
-     * @return array
+     * @return array<int, mixed>
      */
     protected function prepareBindValues($sideB): array
     {

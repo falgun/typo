@@ -18,7 +18,10 @@ final class UpdateQueryStep1
     /** @psalm-suppress PropertyNotSetInConstructor */
     private Table $table;
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @var array<int, JoinInterface>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private array $joins;
 
     /** @psalm-suppress PropertyNotSetInConstructor */

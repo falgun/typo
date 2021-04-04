@@ -5,6 +5,7 @@ namespace Falgun\Typo\Query\Insert;
 
 use Falgun\Kuery\Kuery;
 use Falgun\Typo\Query\Parts\Table;
+use Falgun\Typo\Query\Parts\Column;
 use Falgun\Typo\Query\Parts\Collection;
 
 final class InsertQueryFinalStep
@@ -15,7 +16,17 @@ final class InsertQueryFinalStep
 
     /** @psalm-suppress PropertyNotSetInConstructor */
     private Table $table;
+
+    /**
+     * @var array<int, Column>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private array $columns;
+
+    /**
+     * @var array<int, array<int, mixed>>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private array $valueSet;
 
     /** @psalm-suppress PropertyNotSetInConstructor */
@@ -25,6 +36,14 @@ final class InsertQueryFinalStep
         $this->valueSet = [];
     }
 
+    /**
+     * @param Kuery $kuery
+     * @param Table $table
+     * @param array<int, Column> $columns
+     * @param array<int, array<int, mixed>> $valueSet
+     *
+     * @return static
+     */
     public static function fromLastStep(
         Kuery $kuery,
         Table $table,

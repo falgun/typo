@@ -8,6 +8,7 @@ use Falgun\Typo\Query\Result;
 use Falgun\Typo\Query\Parts\Limit;
 use Falgun\Typo\Query\Parts\Column;
 use Falgun\Typo\Query\Parts\Collection;
+use Falgun\Typo\Query\Parts\JoinInterface;
 use Falgun\Typo\Query\Parts\OrderByInterface;
 use Falgun\Typo\Query\Parts\TableLikeInterface;
 use Falgun\Typo\Query\Parts\ColumnLikeInterface;
@@ -19,13 +20,19 @@ final class SelectQueryFinalStep implements SelectQueryInterface
     /** @psalm-suppress PropertyNotSetInConstructor */
     private Kuery $kuery;
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @var array<int, ColumnLikeInterface>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private array $selectedColumns;
 
     /** @psalm-suppress PropertyNotSetInConstructor */
     private TableLikeInterface $table;
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @var array<int, JoinInterface>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private array $joins = [];
     private ConditionGroup $conditionGroup;
 
@@ -51,6 +58,18 @@ final class SelectQueryFinalStep implements SelectQueryInterface
         $this->limit = Limit::fromBlank();
     }
 
+    /**
+     * @param Kuery $kuery
+     * @param array<int, ColumnLikeInterface> $columns
+     * @param TableLikeInterface $table
+     * @param array<int, JoinInterface> $joins
+     * @param ConditionGroup $conditionGroup
+     * @param array<int, Column> $groupBys
+     * @param array<int, OrderByInterface> $orderBys
+     * @param Limit $limit
+     *
+     * @return SelectQueryFinalStep
+     */
     public static function fromLastStep(
         Kuery $kuery,
         array $columns,

@@ -16,7 +16,10 @@ final class InsertQueryStep1
     /** @psalm-suppress PropertyNotSetInConstructor */
     private Table $table;
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @var array<int, Column>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private array $columns;
 
     /** @psalm-suppress PropertyNotSetInConstructor */

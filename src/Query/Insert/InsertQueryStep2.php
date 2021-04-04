@@ -16,10 +16,16 @@ final class InsertQueryStep2
     /** @psalm-suppress PropertyNotSetInConstructor */
     private Table $table;
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @var array<int, Column>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private array $columns;
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @var array<int, array<int, mixed>>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private array $valueSet;
 
     /** @psalm-suppress PropertyNotSetInConstructor */
@@ -28,6 +34,14 @@ final class InsertQueryStep2
         
     }
 
+    /**
+     * @param Kuery $kuery
+     * @param Table $table
+     * @param array<int, Column> $columns
+     * @param array<int, mixed> $values
+     *
+     * @return static
+     */
     public static function fromStep1(
         Kuery $kuery,
         Table $table,

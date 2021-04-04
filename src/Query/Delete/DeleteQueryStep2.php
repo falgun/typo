@@ -6,6 +6,7 @@ namespace Falgun\Typo\Query\Delete;
 use Falgun\Kuery\Kuery;
 use Falgun\Typo\Query\Parts\Limit;
 use Falgun\Typo\Query\Parts\Table;
+use Falgun\Typo\Query\Parts\JoinInterface;
 use Falgun\Typo\Query\Parts\OrderByInterface;
 use Falgun\Typo\Query\Conditions\ConditionInterface;
 use Falgun\Typo\Query\Parts\Condition\ConditionGroup;
@@ -19,7 +20,10 @@ final class DeleteQueryStep2
     /** @psalm-suppress PropertyNotSetInConstructor */
     private Table $table;
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @var array<int, JoinInterface>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private array $joins;
     private ConditionGroup $conditionGroup;
 
@@ -35,6 +39,14 @@ final class DeleteQueryStep2
         $this->conditionGroup = ConditionGroup::fromBlank();
     }
 
+    /**
+     * @param Kuery $kuery
+     * @param Table $table
+     * @param array<int, JoinInterface> $joins
+     * @param ConditionInterface $condition
+     *
+     * @return DeleteQueryStep2
+     */
     public static function fromCondition(
         Kuery $kuery,
         Table $table,
@@ -65,6 +77,9 @@ final class DeleteQueryStep2
         return $this;
     }
 
+    /**
+     * @psalm-suppress DuplicateArrayKey
+     */
     public function orderBy(OrderByInterface $orderBy, OrderByInterface ...$orderBys): DeleteQueryStep3
     {
         return DeleteQueryStep3::fromOrderBy(

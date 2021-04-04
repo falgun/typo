@@ -30,7 +30,7 @@
         "phpunit/phpunit": "^9.5",
         "sempro/phpunit-pretty-print": "^1.4",
         "squizlabs/php_codesniffer": "dev-master",
-        "vimeo/psalm": "^3.18"
+        "vimeo/psalm": "^4.7"
     },
     "scripts": {
         "phpunit": "phpunit --verbose --colors=always"

@@ -7,6 +7,7 @@ use Falgun\Kuery\Kuery;
 use Falgun\Typo\Query\Parts\Limit;
 use Falgun\Typo\Query\Parts\Table;
 use Falgun\Typo\Query\Parts\Collection;
+use Falgun\Typo\Query\Parts\JoinInterface;
 use Falgun\Typo\Query\Parts\OrderByInterface;
 use Falgun\Typo\Query\Conditions\ConditionInterface;
 use Falgun\Typo\Query\Parts\Condition\ConditionGroup;
@@ -20,7 +21,10 @@ final class DeleteQueryFinalStep
     /** @psalm-suppress PropertyNotSetInConstructor */
     private Table $table;
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @var array<int, JoinInterface>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private array $joins;
     private ConditionGroup $conditionGroup;
 
@@ -40,6 +44,16 @@ final class DeleteQueryFinalStep
         $this->limit = Limit::fromBlank();
     }
 
+    /**
+     * @param Kuery $kuery
+     * @param Table $table
+     * @param array<int, JoinInterface> $joins
+     * @param ConditionGroup $conditionGroup
+     * @param array<int, OrderByInterface> $orderBys
+     * @param Limit $limit
+     *
+     * @return DeleteQueryFinalStep
+     */
     public static function fromLastStep(
         Kuery $kuery,
         Table $table,

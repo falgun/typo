@@ -20,13 +20,19 @@ final class SelectQueryStep2 implements SelectQueryInterface
     /** @psalm-suppress PropertyNotSetInConstructor */
     private Kuery $kuery;
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @var array<int, ColumnLikeInterface>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private array $selectedColumns;
 
     /** @psalm-suppress PropertyNotSetInConstructor */
     private TableLikeInterface $table;
 
-    /** @psalm-suppress PropertyNotSetInConstructor */
+    /**
+     * @var array<int, JoinInterface>
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
     private array $joins = [];
     private ConditionGroup $conditionGroup;
 
@@ -52,6 +58,13 @@ final class SelectQueryStep2 implements SelectQueryInterface
         $this->limit = Limit::fromBlank();
     }
 
+    /**
+     * @param Kuery $kuery
+     * @param array<int, ColumnLikeInterface> $columns
+     * @param TableLikeInterface $table
+     *
+     * @return static
+     */
     public static function fromTable(Kuery $kuery, array $columns, TableLikeInterface $table): static
     {
         $object = new static;
@@ -105,6 +118,9 @@ final class SelectQueryStep2 implements SelectQueryInterface
         return $this;
     }
 
+    /**
+     * @psalm-suppress DuplicateArrayKey
+     */
     public function groupBy(Column $groupBy, Column ...$groupBys): SelectQueryStep2
     {
         $this->groupBys = [...$this->groupBys, $groupBy, ... $groupBys];
@@ -112,9 +128,12 @@ final class SelectQueryStep2 implements SelectQueryInterface
         return $this;
     }
 
+    /**
+     * @psalm-suppress DuplicateArrayKey
+     */
     public function orderBy(OrderByInterface $orderBy, OrderByInterface ...$orderBys): SelectQueryStep2
     {
-        $this->orderBys = [...$this->orderBys, $orderBy, ... $orderBys];
+        $this->orderBys = [...$this->orderBys, $orderBy, ...$orderBys];
 
         return $this;
     }
